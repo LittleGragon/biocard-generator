@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import Home from '$containers/home';
 import WorkSpace from '$containers/work-space';
 import Header from '$containers/header';
 import MainContent from '$containers/main-content';
@@ -9,8 +8,7 @@ import '$styles/normalize.less';
 import Biocard from '$containers/biocard';
 
 const config = [
-  { path: '/', component: Home },
-  { path: '/biocard', component: Biocard },
+  { path: '/', component: Biocard },
 ];
 const BasicExample = () => (
   <Router>

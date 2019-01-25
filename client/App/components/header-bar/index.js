@@ -1,6 +1,7 @@
 import React from 'React';
 import PropTypes from 'prop-types';
-import { AppBar, Toolbar } from 'material-ui';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
 import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
@@ -25,7 +26,7 @@ class HeaderBar extends React.Component {
         <AppBar position="static">
           <Toolbar>
             <Typography variant="title" color="inherit" className={classes.flex}>
-              LitteGragon personal website
+              Biocard Generators
             </Typography>
           </Toolbar>
         </AppBar>

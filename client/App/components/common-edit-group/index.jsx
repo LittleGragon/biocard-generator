@@ -1,0 +1,260 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+import Grid from '@material-ui/core/Grid';
+import Checkbox from '@material-ui/core/Checkbox';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+import CropperImage from '$components/cropper-img';
+import './style';
+
+const styles = {
+  biocardContainer: {
+  },
+  base: {
+    background: '#000000',
+    width: '100%',
+    height: '100%',
+  },
+  agentName: {
+    fontFamily: 'GeomGraphic-SemiBold',
+    fontSize: 68,
+    fill: '#ffffff',
+  },
+  backAgentName: {
+    fontSize: 71,
+    fill: '#ffffff',
+  },
+  backDesc: {
+    fontSize: 25,
+    lineHeight: '41px',
+    fill: '#c3751a',
+  },
+  unaligned: {
+    fontSize: 29,
+    fill: '#c3751a',
+  },
+  backLogo: {
+    width: 62,
+  },
+};
+class CommonEditGroup extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      fields: [],
+      imageUrl: '',
+    };
+    this.handleCheck = this.handleCheck.bind(this);
+    this.biocardRef = React.createRef();
+    this.handleChange = this.handleChange.bind(this);
+    this.setImageUrl = this.setImageUrl.bind(this);
+    this.handleConfirmCropper = this.handleConfirmCropper.bind(this);
+  }
+  handleCheck(e) {
+    const { checked, name } = e.target;
+    const { fields } = this.state;
+    const newFields = fields.map((item) => {
+      if (item.name === name) {
+        return Object.assign({}, item, {
+          show: checked,
+        });
+      }
+      return item;
+    });
+    this.setState({
+      fields: newFields,
+    });
+    this.setImageUrl();
+  }
+  handleChange(e) {
+    const { name, value } = e.target;
+    const { fields } = this.state;
+    const newFields = fields.map((item) => {
+      if (name === item.name) {
+        return Object.assign({}, item, {
+          text: value,
+        });
+      }
+      return item;
+    });
+    this.setState({
+      fields: newFields,
+    });
+    this.setImageUrl();
+  }
+  setImageUrl() {
+    setTimeout(() => {
+      const previewSvg = this.biocardRef.current;
+      if (!previewSvg) {
+        return '';
+      }
+      const xml = new XMLSerializer().serializeToString(previewSvg);
+      const svg = unescape(encodeURIComponent(xml));
+      const data = `data:image/svg+xml;base64,${btoa(svg)}`;
+      this.setState({
+        imageUrl: data,
+      });
+    });
+  }
+  handleConfirmCropper(url) {
+    const { fields } = this.state;
+    const time = (new Date()).getTime();
+    const imageName = `图片${time}`;
+    const newImage = {
+      xlinkHref: url,
+      x: 0,
+      y: 0,
+      name: imageName,
+      show: true,
+      type: 'image',
+      editType: 'checkbox',
+    };
+    fields.unshift(newImage);
+    this.setState({
+      fields,
+    });
+  }
+  handleInitData() {
+    const { fields } = this.props;
+    this.setState({
+      fields,
+    });
+  }
+  componentDidMount() {
+    this.handleInitData();
+    this.setImageUrl();
+  }
+  render() {
+    const { fields, imageUrl } = this.state;
+    return (
+      <div>
+        <Grid container>
+          <Grid item>
+            <svg
+              height={1050}
+              width={750}
+              className="biocard-svg before-svg"
+              ref={this.biocardRef}
+            >
+              <rect
+                style={styles.base}
+              />
+              {fields.map((item) => {
+                const {
+                  type,
+                  name,
+                  show,
+                  style,
+                  xlinkHref,
+                  x,
+                  y,
+                  text,
+                  stroke,
+                  strokeDasharray,
+                  strokeWidth,
+                  d,
+                } = item;
+                switch (type) {
+                  case 'image':
+                    return show ? <image
+                      x={x}
+                      y={y}
+                      key={name}
+                      style={style}
+                      xlinkHref={xlinkHref}
+                    /> : null;
+                  case 'text':
+                    return <text key={name} x={x} y={y} style={style}>{text}</text>;
+                  case 'dottedLines':
+                    return (
+                      <g key={name} stroke={stroke} strokeWidth={strokeWidth}>
+                        <path strokeDasharray={strokeDasharray} d={d} />
+                      </g>
+                    );
+                  default:
+                    return null;
+                }
+              })}
+            </svg>
+          </Grid>
+          <Grid item>
+            <form>
+              <FormControl component="fieldset">
+                <FormLabel component="legend">checked to show component </FormLabel>
+                <FormGroup>
+                  {fields.map((item) => {
+                    const { editType, name, show } = item;
+                    switch (editType) {
+                      case 'checkbox':
+                        return (
+                          <FormControlLabel
+                            key={name}
+                            label={name}
+                            control={
+                              <Checkbox
+                                name={name}
+                                checked={show}
+                                onChange={this.handleCheck}
+                              />
+                            }
+                          />
+                        );
+                      default:
+                        return null;
+                    }
+                  })}
+                </FormGroup>
+              </FormControl>
+              <FormControl component="legend">
+                {fields.map((item) => {
+                  const { name, text, editType } = item;
+                  switch (editType) {
+                    case 'input':
+                      return (
+                        <TextField
+                          key={name}
+                          name={name}
+                          placeholder={name}
+                          value={text}
+                          label={name}
+                          onChange={this.handleChange}
+                        />
+                      );
+                    default:
+                      return null;
+                  }
+                })}
+              </FormControl>
+              <FormControl component="legend">
+                <CropperImage
+                  onConfirm={this.handleConfirmCropper}
+                  buttonText="上传图片"
+                />
+              </FormControl>
+              <FormControl component="legend">
+                <Button
+                  color="primary"
+                  download={'biocard'}
+                  href={imageUrl}
+                >
+                  下载
+                </Button>
+              </FormControl>
+            </form>
+          </Grid>
+        </Grid>
+      </div>
+    );
+  }
+}
+CommonEditGroup.propTypes = {
+  fields: PropTypes.array,
+};
+CommonEditGroup.defaultProps = {
+  fields: [],
+};
+export default CommonEditGroup;

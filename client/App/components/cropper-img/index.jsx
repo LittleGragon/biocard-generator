@@ -1,9 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Cropper from 'react-cropper';
-import { Dialog, DialogContent, DialogActions, DialogContentText, Button } from 'material-ui';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import Button from '@material-ui/core/Button';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
+import { withStyles } from '@material-ui/core/styles';
 import 'cropperjs/dist/cropper.css';
 
+const styles = {
+  uploadButton: {
+    width: '100%',
+  },
+};
 class CropperImage extends React.Component {
   constructor(props) {
     super(props);
@@ -62,6 +72,7 @@ class CropperImage extends React.Component {
   }
   render() {
     const { open } = this.state;
+    const { buttonText, classes } = this.props;
     return (
       <div className="cropper-img">
         <input
@@ -74,8 +85,9 @@ class CropperImage extends React.Component {
         <Button
           color="primary"
           onClick={this.handleSelectFile}
+          className={classes.uploadButton}
         >
-          上传主背景图
+          {buttonText}
         </Button>
         <Dialog
           open={open}
@@ -104,9 +116,15 @@ class CropperImage extends React.Component {
   }
 }
 CropperImage.propTypes = {
+  // 裁剪确认回调
   onConfirm: PropTypes.func,
+  // 上传按钮文案
+  buttonText: PropTypes.string,
+  // withStyles 注入的样式object
+  classes: PropTypes.object.isRequired,
 };
 CropperImage.defaultProps = {
   onConfirm: () => {},
+  buttonText: '上传',
 };
-export default CropperImage;
+export default withStyles(styles)(CropperImage);

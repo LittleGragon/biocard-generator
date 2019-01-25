@@ -7,13 +7,9 @@ import Icon from '@material-ui/core/Icon';
 import './style.less';
 
 const menus = [{
-  icon: 'home',
-  name: 'Home',
-  url: '/',
-}, {
   icon: 'camera_front',
   name: 'biocard',
-  url: '/biocard',
+  url: '/',
 }];
 class LeftMenu extends React.Component {
   goTo(url) {

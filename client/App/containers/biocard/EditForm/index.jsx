@@ -1,12 +1,16 @@
 import React from 'react';
-import { Grid, Checkbox, FormControl, FormLabel, FormGroup, FormControlLabel, Button, TextField } from 'material-ui';
-import CropperImage from '$components/cropper-img';
-import './style';
+import CommonEditGroup from '$components/common-edit-group';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
 import logoBadge from '../images/ingress_logo_badge.png';
 import orangeTrim from '../images/orange_trim.png';
 import beforeColorsBox from '../images/before_colors_box.png';
 import eighteenYearBadge from '../images/18_year_badge.png';
-// import urlUtils from '$utils/url';
+import backColorBox from '../images/colors_box.png';
+import logo from '../images/ingress_logo.png';
+import niaBadge from '../images/NIA_badge.png';
+
 const styles = {
   biocardContainer: {
   },
@@ -20,11 +24,32 @@ const styles = {
     fontSize: 68,
     fill: '#ffffff',
   },
+  backAgentName: {
+    fontSize: 71,
+    fill: '#ffffff',
+  },
+  backDesc: {
+    fontSize: 25,
+    lineHeight: '41px',
+    fill: '#c3751a',
+  },
+  unaligned: {
+    fontSize: 29,
+    fill: '#c3751a',
+  },
+  backLogo: {
+    width: 62,
+  },
+  backLongDesc: {
+    fontSize: 21,
+    fill: '#ffffff',
+  },
 };
 class EditForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      tabValue: 'before',
       imageUrl: '',
       images: [{
         xlinkHref: logoBadge,
@@ -32,24 +57,32 @@ class EditForm extends React.Component {
         y: 57,
         name: 'logoBadge',
         show: true,
+        type: 'image',
+        editType: 'checkbox',
       }, {
         xlinkHref: orangeTrim,
         x: 0,
         y: 838,
         name: 'orangeTrim',
         show: true,
+        type: 'image',
+        editType: 'checkbox',
       }, {
         xlinkHref: beforeColorsBox,
         x: 598,
         y: 988,
         name: 'beforeCorlorBox',
         show: true,
+        type: 'image',
+        editType: 'checkbox',
       }, {
         xlinkHref: eighteenYearBadge,
         x: 599,
         y: 892,
         name: 'eightenYearBadge',
         show: true,
+        type: 'image',
+        editType: 'checkbox',
       }],
       texts: [{
         text: 'Agent',
@@ -58,162 +91,114 @@ class EditForm extends React.Component {
         y: 980,
         className: 'agent-name-before',
         style: styles.agentName,
+        type: 'text',
+        editType: 'input',
+      }],
+      backImages: [{
+        xlinkHref: backColorBox,
+        name: 'backColorBox',
+        x: 91,
+        y: 888,
+        show: true,
+        type: 'image',
+        editType: 'checkbox',
+      }, {
+        xlinkHref: logo,
+        name: 'logo',
+        x: 184,
+        y: 888,
+        show: true,
+        style: styles.backLogo,
+        type: 'image',
+        editType: 'checkbox',
+      }, {
+        xlinkHref: niaBadge,
+        name: 'niaBadge',
+        x: 280,
+        y: 850,
+        show: true,
+        type: 'image',
+        editType: 'checkbox',
+      }],
+      backTexts: [{
+        x: 90,
+        y: 335,
+        name: 'long_desc',
+        text: 'desc',
+        type: 'text',
+        editType: 'input',
+        style: styles.backLongDesc,
+      }, {
+        text: 'AGENTNAME',
+        name: 'agent_name',
+        x: 89,
+        y: 162,
+        style: styles.backAgentName,
+        type: 'text',
+        editType: 'input',
+      }, {
+        x: 91,
+        y: 260,
+        name: 'desc',
+        text: 'DESCRIPTION GOES HERE',
+        style: styles.backDesc,
+        type: 'text',
+        editType: 'input',
+      }, {
+        x: 90,
+        y: 870,
+        name: 'unaligned',
+        style: styles.unaligned,
+        text: 'UNALIGNED',
+        type: 'text',
+        editType: 'input',
+      }],
+      backDottedLines: [{
+        stroke: '#c3751a',
+        strokeDasharray: '5, 5',
+        name: 'line_one',
+        d: 'M90 230 l571 0',
+        strokeWidth: 2,
+        type: 'dottedLines',
+      }, {
+        stroke: '#c3751a',
+        strokeDasharray: '5, 5',
+        name: 'line_two',
+        d: 'M90 312 l571 0',
+        strokeWidth: 2,
+        type: 'dottedLines',
+      }, {
+        stroke: '#c3751a',
+        strokeDasharray: '5, 5',
+        name: 'line_three',
+        d: 'M90 830 l571 0',
+        strokeWidth: 2,
+        type: 'dottedLines',
       }],
       done: false,
     };
-    this.handleCheck = this.handleCheck.bind(this);
-    this.biocardRef = React.createRef();
-    this.handleChange = this.handleChange.bind(this);
-    this.setImageUrl = this.setImageUrl.bind(this);
-    this.handleConfirmCropper = this.handleConfirmCropper.bind(this);
-  }
-  handleCheck(e) {
-    const { checked, name } = e.target;
-    const { images } = this.state;
-    const newImages = images.map((item) => {
-      if (item.name === name) {
-        return Object.assign({}, item, {
-          show: checked,
-        });
-      }
-      return item;
-    });
-    this.setState({
-      images: newImages,
-    });
-    this.setImageUrl();
-  }
-  handleChange(e) {
-    const { name, value } = e.target;
-    const { texts } = this.state;
-    const newTexts = texts.map((item) => {
-      if (name === item.name) {
-        return Object.assign({}, item, {
-          text: value,
-        });
-      }
-      return item;
-    });
-    this.setState({
-      texts: newTexts,
-    });
-    this.setImageUrl();
-  }
-  setImageUrl() {
-    setTimeout(() => {
-      const previewSvg = this.biocardRef.current;
-      if (!previewSvg) {
-        return '';
-      }
-      const xml = new XMLSerializer().serializeToString(previewSvg);
-      const svg = unescape(encodeURIComponent(xml));
-      const data = `data:image/svg+xml;base64,${btoa(svg)}`;
-      this.setState({
-        imageUrl: data,
-      });
-    });
-  }
-  handleConfirmCropper(url) {
-    const { images } = this.state;
-    const newImage = {
-      xlinkHref: url,
-      x: 0,
-      y: 0,
-      name: 'mainImage',
-      show: true,
-    };
-    images.unshift(newImage);
-    this.setState({
-      images,
-    });
   }
   render() {
-    const { images, texts, imageUrl } = this.state;
+    const { images, texts, tabValue, backTexts, backImages, backDottedLines } = this.state;
+    const befoeFields = [...images, ...texts];
+    const backFields = [...backImages, ...backTexts, ...backDottedLines];
     return (
-      <div >
-        <Grid container>
-          <Grid item>
-            <svg
-              height={1050}
-              width={750}
-              className="biocard-container"
-              ref={this.biocardRef}
-            >
-              <rect
-                style={styles.base}
-                className="biocard-base"
-              />
-              {images.map((item) => {
-                const { name, show, ...others } = item;
-                return show ? <image key={name} {...others} /> : null;
-              })}
-              {texts.map((item) => {
-                const { name, text, ...others } = item;
-                return <text key={name} {...others} >{text}</text>;
-              })}
-            </svg>
-          </Grid>
-          <Grid item >
-            <form>
-              <FormControl component="fieldset">
-                <FormLabel component="legend">checked to show component </FormLabel>
-                <FormGroup>
-                  {images.map((item) => {
-                    const { name, show } = item;
-                    return (
-                      <FormControlLabel
-                        key={name}
-                        control={
-                          <Checkbox
-                            name={name}
-                            checked={show}
-                          />
-                        }
-                        onChange={this.handleCheck}
-                        label={name}
-                      />
-                    );
-                  })}
-                </FormGroup>
-              </FormControl>
-
-              <FormControl component="legend">
-                {texts.map((item) => {
-                  const { name, text } = item;
-                  return (
-                    <TextField
-                      key={name}
-                      name={name}
-                      placeholder={name}
-                      value={text}
-                      label={name}
-                      onChange={this.handleChange}
-                    />
-                  );
-                })}
-              </FormControl>
-              <FormControl component="legend">
-                <CropperImage
-                  onConfirm={this.handleConfirmCropper}
-                />
-              </FormControl>
-              <FormControl component="legend">
-                <Button
-                  color="primary"
-                  download={'biocard'}
-                  href={imageUrl}
-                >
-                  下载
-                </Button>
-              </FormControl>
-            </form>
-          </Grid>
-        </Grid>
-        <img
-          src={imageUrl}
-          alt="preview_biocard"
-          className="preview"
-        />
+      <div>
+        <Tabs
+          value={tabValue}
+          onChange={(e, value) => {
+            this.setState({
+              tabValue: value,
+            });
+          }}
+        >
+          <Tab value="before" label="前面版" />
+          <Tab value="after" label="后面板" />
+        </Tabs>
+        <Typography component="div" style={{ padding: 8 * 3 }}>
+          {tabValue === 'before' && <CommonEditGroup fields={befoeFields} />}
+          {tabValue === 'after' && <CommonEditGroup fields={backFields} />}
+        </Typography>
       </div>
     );
   }
