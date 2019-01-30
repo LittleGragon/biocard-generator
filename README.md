@@ -9,3 +9,6 @@
 ```npm run build:dev```
 ## 启动网站开发模式
 ```npm run dev```
+> 打开 [http://localhost:7001](http://localhost:7001)
+# 问题反馈
+[问题反馈地址](https://github.com/LittleGragon/biocard-generator/issues)
