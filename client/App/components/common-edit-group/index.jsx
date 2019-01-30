@@ -53,6 +53,7 @@ class CommonEditGroup extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.setImageUrl = this.setImageUrl.bind(this);
     this.handleConfirmCropper = this.handleConfirmCropper.bind(this);
+    this.handleChangeLocation = this.handleChangeLocation.bind(this);
   }
   handleCheck(e) {
     const { checked, name } = e.target;
@@ -124,6 +125,24 @@ class CommonEditGroup extends React.Component {
       fields,
     });
   }
+  /**
+   * 用于修改模块位置的函数
+  */
+  handleChangeLocation(e, coordinateType) {
+    const { name, value } = e.target;
+    const { fields } = this.props;
+    const newFields = fields.map((item) => {
+      if (name === item.name) {
+        return Object.assign({}, item, {
+          [coordinateType]: value,
+        });
+      }
+      return item;
+    });
+    this.setState({
+      fields: newFields,
+    });
+  }
   componentDidMount() {
     this.handleInitData();
     this.setImageUrl();
@@ -187,21 +206,43 @@ class CommonEditGroup extends React.Component {
                 <FormLabel component="legend">checked to show component </FormLabel>
                 <FormGroup>
                   {fields.map((item) => {
-                    const { editType, name, show } = item;
+                    const { editType, name, show, y, x } = item;
                     switch (editType) {
                       case 'checkbox':
                         return (
-                          <FormControlLabel
-                            key={name}
-                            label={name}
-                            control={
-                              <Checkbox
-                                name={name}
-                                checked={show}
-                                onChange={this.handleCheck}
-                              />
-                            }
-                          />
+                          <div key={name}>
+                            <FormControlLabel
+                              key={name}
+                              label={name}
+                              control={
+                                <Checkbox
+                                  name={name}
+                                  checked={show}
+                                  onChange={this.handleCheck}
+                                />
+                              }
+                            />
+                            <br />
+                            <TextField
+                              name={name}
+                              margin="normal"
+                              type="number"
+                              value={y}
+                              onChange={(e) => {
+                                this.handleChangeLocation(e, 'y');
+                              }}
+                            />
+                            <br />
+                            <TextField
+                              name={name}
+                              margin="normal"
+                              type="number"
+                              value={x}
+                              onChange={(e) => {
+                                this.handleChangeLocation(e, 'x');
+                              }}
+                            />
+                          </div>
                         );
                       default:
                         return null;
@@ -211,18 +252,42 @@ class CommonEditGroup extends React.Component {
               </FormControl>
               <FormControl component="legend">
                 {fields.map((item) => {
-                  const { name, text, editType } = item;
+                  const { name, text, editType, y, x } = item;
                   switch (editType) {
                     case 'input':
                       return (
-                        <TextField
-                          key={name}
-                          name={name}
-                          placeholder={name}
-                          value={text}
-                          label={name}
-                          onChange={this.handleChange}
-                        />
+                        <div key={name}>
+                          <TextField
+                            key={name}
+                            name={name}
+                            placeholder={name}
+                            value={text}
+                            label={name}
+                            onChange={this.handleChange}
+                          />
+                          <br />
+                          <TextField
+                            variant="outlined"
+                            name={name}
+                            margin="normal"
+                            type="number"
+                            value={y}
+                            onChange={(e) => {
+                              this.handleChangeLocation(e, 'y');
+                            }}
+                          />
+                          <br />
+                          <TextField
+                            variant="outlined"
+                            name={name}
+                            margin="normal"
+                            type="number"
+                            value={x}
+                            onChange={(e) => {
+                              this.handleChangeLocation(e, 'x');
+                            }}
+                          />
+                        </div>
                       );
                     default:
                       return null;
