@@ -1,6 +1,6 @@
 {
   "name": "biocard_generator",
-  "description": "一个建议的ingress biocard 制作项目",
+  "description": "一个简易的ingress biocard 制作项目",
   "version": "0.0.1",
   "private": true,
   "devDependencies": {
