@@ -54,38 +54,43 @@ class CommonEditGroup extends React.Component {
     this.setImageUrl = this.setImageUrl.bind(this);
     this.handleConfirmCropper = this.handleConfirmCropper.bind(this);
     this.handleChangeLocation = this.handleChangeLocation.bind(this);
+    this.handleChangeFields = this.handleChangeFields.bind(this);
   }
-  handleCheck(e) {
-    const { checked, name } = e.target;
+  setFields(fields) {
+    const { onChange } = this.props;
+    this.setState({
+      fields,
+    });
+    onChange(fields);
+    this.setImageUrl();
+  }
+  handleChangeFields({ key, value, name }) {
     const { fields } = this.state;
     const newFields = fields.map((item) => {
       if (item.name === name) {
         return Object.assign({}, item, {
-          show: checked,
+          [key]: value,
         });
       }
       return item;
     });
-    this.setState({
-      fields: newFields,
+    this.setFields(newFields);
+  }
+  handleCheck(e) {
+    const { checked, name } = e.target;
+    this.handleChangeFields({
+      key: 'show',
+      value: checked,
+      name,
     });
-    this.setImageUrl();
   }
   handleChange(e) {
     const { name, value } = e.target;
-    const { fields } = this.state;
-    const newFields = fields.map((item) => {
-      if (name === item.name) {
-        return Object.assign({}, item, {
-          text: value,
-        });
-      }
-      return item;
+    this.handleChangeFields({
+      key: 'text',
+      name,
+      value,
     });
-    this.setState({
-      fields: newFields,
-    });
-    this.setImageUrl();
   }
   setImageUrl() {
     setTimeout(() => {
@@ -115,37 +120,25 @@ class CommonEditGroup extends React.Component {
       editType: 'checkbox',
     };
     fields.unshift(newImage);
-    this.setState({
-      fields,
-    });
+    this.setFields(fields);
   }
   handleInitData() {
     const { fields } = this.props;
-    this.setState({
-      fields,
-    });
+    this.setFields(fields);
   }
   /**
    * 用于修改模块位置的函数
   */
   handleChangeLocation(e, coordinateType) {
     const { name, value } = e.target;
-    const { fields } = this.props;
-    const newFields = fields.map((item) => {
-      if (name === item.name) {
-        return Object.assign({}, item, {
-          [coordinateType]: value,
-        });
-      }
-      return item;
-    });
-    this.setState({
-      fields: newFields,
+    this.handleChangeFields({
+      name,
+      value,
+      key: coordinateType,
     });
   }
   componentDidMount() {
     this.handleInitData();
-    this.setImageUrl();
   }
   render() {
     const { fields, imageUrl } = this.state;
@@ -318,8 +311,13 @@ class CommonEditGroup extends React.Component {
 }
 CommonEditGroup.propTypes = {
   fields: PropTypes.array,
+  // fields change callback
+  onChange: PropTypes.func,
 };
 CommonEditGroup.defaultProps = {
   fields: [],
+  onChange: (fields) => {
+    return fields;
+  },
 };
 export default CommonEditGroup;
