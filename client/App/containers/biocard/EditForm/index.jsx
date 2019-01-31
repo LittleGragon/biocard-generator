@@ -51,7 +51,7 @@ class EditForm extends React.Component {
     this.state = {
       tabValue: 'before',
       imageUrl: '',
-      images: [{
+      beforeFileds: [{
         xlinkHref: logoBadge,
         x: 59,
         y: 57,
@@ -83,8 +83,8 @@ class EditForm extends React.Component {
         show: true,
         type: 'image',
         editType: 'checkbox',
-      }],
-      texts: [{
+      },
+      {
         text: 'Agent',
         name: 'agent_name',
         x: 70,
@@ -93,8 +93,9 @@ class EditForm extends React.Component {
         style: styles.agentName,
         type: 'text',
         editType: 'input',
-      }],
-      backImages: [{
+      },
+      ],
+      backFields: [{
         xlinkHref: backColorBox,
         name: 'backColorBox',
         x: 91,
@@ -119,8 +120,7 @@ class EditForm extends React.Component {
         show: true,
         type: 'image',
         editType: 'checkbox',
-      }],
-      backTexts: [{
+      }, {
         x: 90,
         y: 335,
         name: 'long_desc',
@@ -152,8 +152,7 @@ class EditForm extends React.Component {
         text: 'UNALIGNED',
         type: 'text',
         editType: 'input',
-      }],
-      backDottedLines: [{
+      }, {
         stroke: '#c3751a',
         strokeDasharray: '5, 5',
         name: 'line_one',
@@ -179,9 +178,7 @@ class EditForm extends React.Component {
     };
   }
   render() {
-    const { images, texts, tabValue, backTexts, backImages, backDottedLines } = this.state;
-    const befoeFields = [...images, ...texts];
-    const backFields = [...backImages, ...backTexts, ...backDottedLines];
+    const { beforeFileds, backFields, tabValue } = this.state;
     return (
       <div>
         <Tabs
@@ -196,8 +193,22 @@ class EditForm extends React.Component {
           <Tab value="after" label="后面板" />
         </Tabs>
         <Typography component="div" style={{ padding: 8 * 3 }}>
-          {tabValue === 'before' && <CommonEditGroup fields={befoeFields} />}
-          {tabValue === 'after' && <CommonEditGroup fields={backFields} />}
+          {tabValue === 'before' && <CommonEditGroup
+            fields={beforeFileds}
+            onChange={(fields) => {
+              this.setState({
+                beforeFileds: fields,
+              });
+            }}
+          />}
+          {tabValue === 'after' && <CommonEditGroup
+            fields={backFields}
+            onChange={(fields) => {
+              this.setState({
+                backFields: fields,
+              });
+            }}
+          />}
         </Typography>
       </div>
     );
