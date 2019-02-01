@@ -142,20 +142,37 @@ class CommonEditGroup extends React.Component {
     window.removeEventListener('mousemove', this.handleMouseMove);
     window.removeEventListener('mouseup', this.handleMouseUp);
   }
-  dragEnd = (event) => {
-    this.setState({ targetbox: null });
+  handleMouseDown = (e, name) => {
+    this.setState({
+      moveModelName: name,
+    });
+    this.coords = {
+      x: e.pageX,
+      y: e.pageY,
+    };
+    document.addEventListener('mousemove', this.handleMouseMove);
   }
-
-  dragStart = (event) => {
-    event.dataTransfer.setData('text', event.target.id);
-    this.setState({ targetbox: true });
+  handleMouseUp = () => {
+    document.removeEventListener('mousemove', this.handleMouseMove);
+    this.coords = {};
   }
-
-  drop = (event) => {
-    if (event.target.id) {
-      // this.props.swap(event.dataTransfer.getData("text"), event.target.id)
-      event.dataTransfer.clearData();
-    }
+  handleMouseMove = (e) => {
+    const scalePoint = 0.5;
+    const diffX = (this.coords.x - e.pageX) / scalePoint;
+    const diffY = (this.coords.y - e.pageY) / scalePoint;
+    this.coords.x = e.pageX;
+    this.coords.y = e.pageY;
+    const { fields, moveModelName } = this.state;
+    const newFields = fields.map((item) => {
+      if (item.name === moveModelName) {
+        return Object.assign({}, item, {
+          x: item.x - diffX,
+          y: item.y - diffY,
+        });
+      }
+      return item;
+    });
+    this.setFields(newFields);
   }
   render() {
     const { fields, imageUrl } = this.state;
@@ -201,13 +218,37 @@ class CommonEditGroup extends React.Component {
                       onDragStart={this.dragStart}
                       onDragOver={event => event.preventDefault()}
                       onDragEnd={this.dragEnd}
+                      onMouseDown={(e) => {
+                        this.handleMouseDown(e, name);
+                      }}
+                      onMouseUp={this.handleMouseUp}
                     /> : null;
                   case 'text':
-                    return <text key={name} x={x} y={y} style={style}>{text}</text>;
+                    return (
+                      <text
+                        key={name}
+                        x={x}
+                        y={y}
+                        style={style}
+                        onMouseDown={(e) => {
+                          this.handleMouseDown(e, name);
+                        }}
+                        onMouseUp={this.handleMouseUp}
+                      >
+                        {text}
+                      </text>
+                    );
                   case 'dottedLines':
                     return (
-                      <g key={name} stroke={stroke} strokeWidth={strokeWidth}>
-                        <path strokeDasharray={strokeDasharray} d={d} />
+                      <g
+                        key={name}
+                        stroke={stroke}
+                        strokeWidth={strokeWidth}
+                      >
+                        <path
+                          strokeDasharray={strokeDasharray}
+                          d={d}
+                        />
                       </g>
                     );
                   default:
