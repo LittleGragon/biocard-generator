@@ -44309,7 +44309,8 @@ var BasicExample = function BasicExample() {
         },
         config.map(function (item) {
           return _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: item.path, component: item.component, key: item.path });
-        })
+        }),
+        _react2.default.createElement(_reactRouterDom.Route, { component: _biocard2.default })
       )
     )
   );
@@ -51012,11 +51013,7 @@ var MainContent = function (_React$Component) {
         _react2.default.createElement(
           _Grid2.default,
           { container: true, spacing: 8 },
-          _react2.default.createElement(
-            _Grid2.default,
-            { item: true, lg: 2 },
-            this.props.leftMenu
-          ),
+          _react2.default.createElement(_Grid2.default, { item: true, lg: 2 }),
           _react2.default.createElement(
             _Grid2.default,
             { item: true, lg: 10 },
@@ -51031,7 +51028,7 @@ var MainContent = function (_React$Component) {
 }(_react2.default.Component);
 
 MainContent.propTypes = {
-  leftMenu: _propTypes2.default.any.isRequired,
+  // leftMenu: PropTypes.any.isRequired,
   children: _propTypes2.default.any.isRequired
 };
 exports.default = MainContent;
