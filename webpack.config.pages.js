@@ -5,7 +5,7 @@ const pagesBuildConfig = merge(config, {
   mode: 'production',
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'public/pages'),
+    path: path.resolve(__dirname, ''),
   },
 })
 module.exports = pagesBuildConfig;
