@@ -12,3 +12,5 @@
 > 打开 [http://localhost:7001](http://localhost:7001)
 # 问题反馈
 [问题反馈地址](https://github.com/LittleGragon/biocard-generator/issues)
+# 订阅
+[telegram 项目动态订阅](https://t.me/biocard_generator)
