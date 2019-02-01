@@ -22,6 +22,7 @@ const BasicExample = () => (
             <Route exact path={item.path} component={item.component} key={item.path} />
           );
         })}
+        <Route component={Biocard} />
       </MainContent>
     </WorkSpace>
   </Router>
