@@ -47,14 +47,12 @@ class CommonEditGroup extends React.Component {
     this.state = {
       fields: [],
       imageUrl: '',
+      originX: 0,
+      originY: 0,
+      isDragging: false,
+      moveModelName: '',
     };
-    this.handleCheck = this.handleCheck.bind(this);
     this.biocardRef = React.createRef();
-    this.handleChange = this.handleChange.bind(this);
-    this.setImageUrl = this.setImageUrl.bind(this);
-    this.handleConfirmCropper = this.handleConfirmCropper.bind(this);
-    this.handleChangeLocation = this.handleChangeLocation.bind(this);
-    this.handleChangeFields = this.handleChangeFields.bind(this);
   }
   setFields(fields) {
     const { onChange } = this.props;
@@ -64,7 +62,7 @@ class CommonEditGroup extends React.Component {
     onChange(fields);
     this.setImageUrl();
   }
-  handleChangeFields({ key, value, name }) {
+  handleChangeFields = ({ key, value, name }) => {
     const { fields } = this.state;
     const newFields = fields.map((item) => {
       if (item.name === name) {
@@ -76,7 +74,7 @@ class CommonEditGroup extends React.Component {
     });
     this.setFields(newFields);
   }
-  handleCheck(e) {
+  handleCheck = (e) => {
     const { checked, name } = e.target;
     this.handleChangeFields({
       key: 'show',
@@ -84,7 +82,7 @@ class CommonEditGroup extends React.Component {
       name,
     });
   }
-  handleChange(e) {
+  handleChange = (e) => {
     const { name, value } = e.target;
     this.handleChangeFields({
       key: 'text',
@@ -92,7 +90,7 @@ class CommonEditGroup extends React.Component {
       value,
     });
   }
-  setImageUrl() {
+  setImageUrl = () => {
     setTimeout(() => {
       const previewSvg = this.biocardRef.current;
       if (!previewSvg) {
@@ -106,7 +104,7 @@ class CommonEditGroup extends React.Component {
       });
     });
   }
-  handleConfirmCropper(url) {
+  handleConfirmCropper = (url) => {
     const { fields } = this.state;
     const time = (new Date()).getTime();
     const imageName = `图片${time}`;
@@ -122,7 +120,7 @@ class CommonEditGroup extends React.Component {
     fields.unshift(newImage);
     this.setFields(fields);
   }
-  handleInitData() {
+  handleInitData = () => {
     const { fields } = this.props;
     this.setFields(fields);
   }
@@ -139,6 +137,25 @@ class CommonEditGroup extends React.Component {
   }
   componentDidMount() {
     this.handleInitData();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('mousemove', this.handleMouseMove);
+    window.removeEventListener('mouseup', this.handleMouseUp);
+  }
+  dragEnd = (event) => {
+    this.setState({ targetbox: null });
+  }
+
+  dragStart = (event) => {
+    event.dataTransfer.setData('text', event.target.id);
+    this.setState({ targetbox: true });
+  }
+
+  drop = (event) => {
+    if (event.target.id) {
+      // this.props.swap(event.dataTransfer.getData("text"), event.target.id)
+      event.dataTransfer.clearData();
+    }
   }
   render() {
     const { fields, imageUrl } = this.state;
@@ -173,11 +190,17 @@ class CommonEditGroup extends React.Component {
                 switch (type) {
                   case 'image':
                     return show ? <image
+                      id={name}
                       x={x}
                       y={y}
                       key={name}
                       style={style}
                       xlinkHref={xlinkHref}
+                      draggable="true"
+                      onDrop={this.drop}
+                      onDragStart={this.dragStart}
+                      onDragOver={event => event.preventDefault()}
+                      onDragEnd={this.dragEnd}
                     /> : null;
                   case 'text':
                     return <text key={name} x={x} y={y} style={style}>{text}</text>;
