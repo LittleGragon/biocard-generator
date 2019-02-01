@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 import Grid from '@material-ui/core/Grid';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControl from '@material-ui/core/FormControl';
@@ -51,6 +52,10 @@ class CommonEditGroup extends React.Component {
       originY: 0,
       isDragging: false,
       moveModelName: '',
+      uploadedImageMessage: {
+        width: 0,
+        height: 0,
+      },
     };
     this.biocardRef = React.createRef();
   }
@@ -105,7 +110,9 @@ class CommonEditGroup extends React.Component {
     });
   }
   handleConfirmCropper = (url) => {
-    const { fields } = this.state;
+    const { fields, uploadedImageMessage } = this.state;
+    const width = _.get(uploadedImageMessage, 'width', '');
+    const height = _.get(uploadedImageMessage, 'height', '');
     const time = (new Date()).getTime();
     const imageName = `图片${time}`;
     const newImage = {
@@ -116,6 +123,8 @@ class CommonEditGroup extends React.Component {
       show: true,
       type: 'image',
       editType: 'checkbox',
+      width,
+      height,
     };
     fields.unshift(newImage);
     this.setFields(fields);
@@ -135,12 +144,30 @@ class CommonEditGroup extends React.Component {
       key: coordinateType,
     });
   }
-  componentDidMount() {
-    this.handleInitData();
-  }
-  componentWillUnmount() {
-    window.removeEventListener('mousemove', this.handleMouseMove);
-    window.removeEventListener('mouseup', this.handleMouseUp);
+  handleChangeSize = (e, sizeType) => {
+    const { name, value } = e.target;
+    const { fields } = this.state;
+    const newFields = fields.map((item) => {
+      if (item.name === name) {
+        const { width, height } = item;
+        if (sizeType === 'width') {
+          const changeHeight = Math.ceil(value * (height / width));
+          return Object.assign({}, item, {
+            width: value,
+            height: changeHeight,
+          });
+        }
+        if (sizeType === 'height') {
+          const changeWidth = Math.ceil(value * (width / height));
+          return Object.assign({}, item, {
+            height: value,
+            width: changeWidth,
+          });
+        }
+      }
+      return item;
+    });
+    this.setFields(newFields);
   }
   handleMouseDown = (e, name) => {
     this.setState({
@@ -174,6 +201,14 @@ class CommonEditGroup extends React.Component {
     });
     this.setFields(newFields);
   }
+
+  componentDidMount() {
+    this.handleInitData();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('mousemove', this.handleMouseMove);
+    window.removeEventListener('mouseup', this.handleMouseUp);
+  }
   render() {
     const { fields, imageUrl } = this.state;
     return (
@@ -203,6 +238,8 @@ class CommonEditGroup extends React.Component {
                   strokeDasharray,
                   strokeWidth,
                   d,
+                  width,
+                  height,
                 } = item;
                 switch (type) {
                   case 'image':
@@ -218,6 +255,8 @@ class CommonEditGroup extends React.Component {
                       onDragStart={this.dragStart}
                       onDragOver={event => event.preventDefault()}
                       onDragEnd={this.dragEnd}
+                      width={width}
+                      height={height}
                       onMouseDown={(e) => {
                         this.handleMouseDown(e, name);
                       }}
@@ -263,7 +302,15 @@ class CommonEditGroup extends React.Component {
                 <FormLabel component="legend">checked to show component </FormLabel>
                 <FormGroup>
                   {fields.map((item) => {
-                    const { editType, name, show, y, x } = item;
+                    const {
+                      editType,
+                      name,
+                      show,
+                      y,
+                      x,
+                      width,
+                      height,
+                    } = item;
                     switch (editType) {
                       case 'checkbox':
                         return (
@@ -284,6 +331,7 @@ class CommonEditGroup extends React.Component {
                               name={name}
                               margin="normal"
                               type="number"
+                              label="y"
                               value={y}
                               onChange={(e) => {
                                 this.handleChangeLocation(e, 'y');
@@ -294,9 +342,32 @@ class CommonEditGroup extends React.Component {
                               name={name}
                               margin="normal"
                               type="number"
+                              label="x"
                               value={x}
                               onChange={(e) => {
                                 this.handleChangeLocation(e, 'x');
+                              }}
+                            />
+                            <br />
+                            <TextField
+                              name={name}
+                              margin="normal"
+                              type="number"
+                              label="width"
+                              value={width}
+                              onChange={(e) => {
+                                this.handleChangeSize(e, 'width');
+                              }}
+                            />
+                            <br />
+                            <TextField
+                              name={name}
+                              margin="normal"
+                              type="number"
+                              label="height"
+                              value={height}
+                              onChange={(e) => {
+                                this.handleChangeSize(e, 'height');
                               }}
                             />
                           </div>
@@ -355,6 +426,11 @@ class CommonEditGroup extends React.Component {
                 <CropperImage
                   onConfirm={this.handleConfirmCropper}
                   buttonText="上传图片"
+                  onCropFile={(uploadedImageMessage) => {
+                    this.setState({
+                      uploadedImageMessage,
+                    });
+                  }}
                 />
               </FormControl>
               <FormControl component="legend">
