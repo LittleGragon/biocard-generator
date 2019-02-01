@@ -24,27 +24,22 @@ class CropperImage extends React.Component {
     };
     this.fileInputRef = React.createRef();
     this.cropperRef = React.createRef();
-    this.handleCrop = this.handleCrop.bind(this);
-    this.handleClose = this.handleClose.bind(this);
-    this.handleSelectFile = this.handleSelectFile.bind(this);
-    this.handleFileChange = this.handleFileChange.bind(this);
-    this.handleOk = this.handleOk.bind(this);
   }
-  handleCrop() {
+  handleCrop = () => {
     const dataUrl = this.cropperRef.current.getCroppedCanvas().toDataURL();
     this.setState({
       cropperUrl: dataUrl,
     });
   }
-  handleClose() {
+  handleClose = () => {
     this.setState({
       open: false,
     });
   }
-  handleSelectFile() {
+  handleSelectFile = () => {
     this.fileInputRef.current.click();
   }
-  async handleFileChange(e) {
+  handleFileChange = async (e) => {
     const file = e.target.files[0];
     const dataUrl = await this.handleGetDataUrl(file);
     this.setState({
@@ -53,7 +48,7 @@ class CropperImage extends React.Component {
     });
     return dataUrl;
   }
-  handleGetDataUrl(file) {
+  handleGetDataUrl = (file) => {
     const reader = new FileReader();
     return new Promise((resolve, reject) => {
       reader.addEventListener('load', function () {
@@ -62,7 +57,7 @@ class CropperImage extends React.Component {
       reader.readAsDataURL(file);
     });
   }
-  handleOk() {
+  handleOk = () => {
     const { onConfirm } = this.props;
     const { cropperUrl } = this.state;
     onConfirm(cropperUrl);
@@ -124,7 +119,7 @@ CropperImage.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 CropperImage.defaultProps = {
-  onConfirm: () => {},
+  onConfirm: () => { },
   buttonText: '上传',
 };
 export default withStyles(styles)(CropperImage);
