@@ -9,7 +9,7 @@ class MainContent extends React.Component {
       <div className="container">
         <Grid container spacing={8}>
           <Grid item lg={2}>
-            {this.props.leftMenu}
+            {/* {this.props.leftMenu} */}
           </Grid>
           <Grid item lg={10}>
             {this.props.children}
@@ -20,7 +20,7 @@ class MainContent extends React.Component {
   }
 }
 MainContent.propTypes = {
-  leftMenu: PropTypes.any.isRequired,
+  // leftMenu: PropTypes.any.isRequired,
   children: PropTypes.any.isRequired,
 };
 export default MainContent;
