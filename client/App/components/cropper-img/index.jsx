@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import PropTypes from 'prop-types';
 import Cropper from 'react-cropper';
 import Dialog from '@material-ui/core/Dialog';
@@ -26,7 +27,18 @@ class CropperImage extends React.Component {
     this.cropperRef = React.createRef();
   }
   handleCrop = () => {
+    const { onCropFile } = this.props;
     const dataUrl = this.cropperRef.current.getCroppedCanvas().toDataURL();
+    const image = new Image();
+    image.src = dataUrl;
+    image.onload = function () {
+      const width = _.get(this, 'width', 0);
+      const height = _.get(this, 'height', 0);
+      onCropFile({
+        width,
+        height,
+      });
+    };
     this.setState({
       cropperUrl: dataUrl,
     });
@@ -40,12 +52,23 @@ class CropperImage extends React.Component {
     this.fileInputRef.current.click();
   }
   handleFileChange = async (e) => {
+    const { onFileChange } = this.props;
     const file = e.target.files[0];
     const dataUrl = await this.handleGetDataUrl(file);
     this.setState({
       originFileUrl: dataUrl,
       open: true,
     });
+    const image = new Image();
+    image.src = dataUrl;
+    image.onload = function () {
+      const width = _.get(this, 'width', 0);
+      const height = _.get(this, 'height', 0);
+      onFileChange(file, {
+        width,
+        height,
+      });
+    };
     return dataUrl;
   }
   handleGetDataUrl = (file) => {
@@ -117,9 +140,15 @@ CropperImage.propTypes = {
   buttonText: PropTypes.string,
   // withStyles 注入的样式object
   classes: PropTypes.object.isRequired,
+  // input file change callback
+  onFileChange: PropTypes.func,
+  // crop file callback
+  onCropFile: PropTypes.func,
 };
 CropperImage.defaultProps = {
   onConfirm: () => { },
   buttonText: '上传',
+  onFileChange: () => { },
+  onCropFile: () => {},
 };
 export default withStyles(styles)(CropperImage);

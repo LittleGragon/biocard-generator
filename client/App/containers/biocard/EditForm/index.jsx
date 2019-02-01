@@ -59,6 +59,8 @@ class EditForm extends React.Component {
         show: true,
         type: 'image',
         editType: 'checkbox',
+        width: 127 * 2,
+        height: 165 * 2,
       }, {
         xlinkHref: orangeTrim,
         x: 0,
@@ -67,6 +69,8 @@ class EditForm extends React.Component {
         show: true,
         type: 'image',
         editType: 'checkbox',
+        width: 750,
+        height: 28,
       }, {
         xlinkHref: beforeColorsBox,
         x: 598,
@@ -75,6 +79,8 @@ class EditForm extends React.Component {
         show: true,
         type: 'image',
         editType: 'checkbox',
+        width: 85,
+        height: 42,
       }, {
         xlinkHref: eighteenYearBadge,
         x: 599,
@@ -83,6 +89,8 @@ class EditForm extends React.Component {
         show: true,
         type: 'image',
         editType: 'checkbox',
+        width: 82,
+        height: 87,
       },
       {
         text: 'Agent',
@@ -103,6 +111,8 @@ class EditForm extends React.Component {
         show: true,
         type: 'image',
         editType: 'checkbox',
+        width: 79,
+        height: 65,
       }, {
         xlinkHref: logo,
         name: 'logo',
@@ -112,6 +122,8 @@ class EditForm extends React.Component {
         style: styles.backLogo,
         type: 'image',
         editType: 'checkbox',
+        width: 62,
+        height: 62 * (2032 / 1760),
       }, {
         xlinkHref: niaBadge,
         name: 'niaBadge',
@@ -120,6 +132,8 @@ class EditForm extends React.Component {
         show: true,
         type: 'image',
         editType: 'checkbox',
+        width: 285,
+        height: 105,
       }, {
         x: 90,
         y: 335,
