@@ -17,7 +17,6 @@
     "babel-preset-latest": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1",
     "classnames": "^2.2.6",
     "css-loader": "^0.28.5",
     "decko": "^1.2.0",
@@ -39,6 +38,7 @@
     "file-loader": "^0.11.2",
     "glob": "^7.1.2",
     "happypack": "^4.0.0-beta.2",
+    "html-webpack-plugin": "^3.2.0",
     "image-webpack-loader": "^4.4.0",
     "immutable": "^3.8.1",
     "less": "^3.8.1",
@@ -73,7 +73,8 @@
     "lint": "eslint --ext js,jsx ./client",
     "ci": "npm run lint && npm run cov",
     "autod": "autod",
-    "build:dev": "webpack --watch",
+    "build:dev": "webpack --config ./webpack.config.dev.js --watch",
+    "build:pages": "webpack --config ./webpack.config.pages.js",
     "pre-commit": [
       "lint"
     ]
