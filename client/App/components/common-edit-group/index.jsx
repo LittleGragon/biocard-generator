@@ -58,6 +58,7 @@ class CommonEditGroup extends React.Component {
       },
     };
     this.biocardRef = React.createRef();
+    this.downloadRef = React.createRef();
   }
   setFields(fields) {
     const { onChange } = this.props;
@@ -104,6 +105,7 @@ class CommonEditGroup extends React.Component {
       const xml = new XMLSerializer().serializeToString(previewSvg);
       const svg = unescape(encodeURIComponent(xml));
       const data = `data:image/svg+xml;base64,${btoa(svg)}`;
+      window.imageBase64 = data;
       this.setState({
         imageUrl: data,
       });
@@ -178,9 +180,11 @@ class CommonEditGroup extends React.Component {
       y: e.pageY,
     };
     document.addEventListener('mousemove', this.handleMouseMove);
+    document.addEventListener('mouseup', this.handleMouseUp);
   }
   handleMouseUp = () => {
     document.removeEventListener('mousemove', this.handleMouseMove);
+    document.removeEventListener('mouseup', this.handleMouseUp);
     this.coords = {};
   }
   handleMouseMove = (e) => {
@@ -201,7 +205,6 @@ class CommonEditGroup extends React.Component {
     });
     this.setFields(newFields);
   }
-
   componentDidMount() {
     this.handleInitData();
   }
@@ -216,10 +219,12 @@ class CommonEditGroup extends React.Component {
         <Grid container>
           <Grid item>
             <svg
+              xmlns="http://www.w3.org/2000/svg"
               height={1050}
               width={750}
               className="biocard-svg before-svg"
               ref={this.biocardRef}
+              id="cardSvg"
             >
               <rect
                 style={styles.base}
@@ -276,6 +281,14 @@ class CommonEditGroup extends React.Component {
                       >
                         {text}
                       </text>
+                    );
+                  case 'multiText':
+                    return (
+                      <foreignObject width="120" height="50" key={name}>
+                        <p style={style}>
+                          {text}
+                        </p>
+                      </foreignObject>
                     );
                   case 'dottedLines':
                     return (
@@ -438,6 +451,7 @@ class CommonEditGroup extends React.Component {
                   color="primary"
                   download={'biocard'}
                   href={imageUrl}
+                  ref={this.downloadRef}
                 >
                   下载
                 </Button>
