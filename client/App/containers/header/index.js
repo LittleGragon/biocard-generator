@@ -1,5 +1,5 @@
 import React from 'React';
-import HeaderBar from '$components/header-bar';
+import HeaderBar from '$components/header-bar/index.jsx';
 // import { withStyles } from '@material-ui/core/styles';
 
 class Header extends React.Component {

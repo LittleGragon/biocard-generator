@@ -5,6 +5,7 @@ import MainContent from '$containers/main-content';
 import LeftMenu from '$containers/left-menu';
 import '$styles/normalize.less';
 import Biocard from '$containers/biocard';
+import Header from '$components/header-bar/index.jsx';
 
 const config = [
   { path: '', component: Biocard },
@@ -12,6 +13,7 @@ const config = [
 const BasicExample = () => (
   <Router>
     <WorkSpace>
+      <Header />
       <MainContent
         leftMenu={<LeftMenu />}
       >
