@@ -68,7 +68,7 @@ class HeaderBar extends React.Component {
     const { fileTypes, open, anchorEl } = this.state;
     return (
       <div className={classes.root}>
-        <AppBar position="static" className={`${styles.positionFixed}`}>
+        <AppBar position="fixed" className={`${styles.positionFixed}`}>
           <Toolbar>
             <Typography variant="title" color="inherit" className={classes.flex}>
               Biocard Generators

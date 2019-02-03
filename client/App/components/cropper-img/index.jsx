@@ -119,7 +119,6 @@ class CropperImage extends React.Component {
               ref={this.cropperRef}
               crop={this.handleCrop}
               src={this.state.originFileUrl}
-              aspectRatio={522 / 566}
               guides={false}
               style={{ height: '100%', width: 'auto' }}
             />
