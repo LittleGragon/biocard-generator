@@ -69389,17 +69389,25 @@ var CommonEditGroup = function (_React$Component) {
               height = item.height;
 
           if (sizeType === 'width') {
-            var changeHeight = Math.ceil(value * (height / width));
+            var changeWidth = value;
+            if (value === '' || value === '0' || value === 0) {
+              changeWidth = 1;
+            }
+            var changeHeight = changeWidth * (height / width);
             return Object.assign({}, item, {
-              width: value,
+              width: changeWidth,
               height: changeHeight
             });
           }
           if (sizeType === 'height') {
-            var changeWidth = Math.ceil(value * (width / height));
+            var _changeHeight = value;
+            if (value === '' || value === '0' || value === 0) {
+              _changeHeight = 1;
+            }
+            var _changeWidth = _changeHeight * (width / height);
             return Object.assign({}, item, {
-              height: value,
-              width: changeWidth
+              height: _changeHeight,
+              width: _changeWidth
             });
           }
         }
@@ -69588,6 +69596,7 @@ var CommonEditGroup = function (_React$Component) {
                         height: height,
                         x: x,
                         y: y,
+                        key: name,
                         onMouseDown: function onMouseDown(e) {
                           _this2.handleMouseDown(e, name);
                         },
