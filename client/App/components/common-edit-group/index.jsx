@@ -151,16 +151,24 @@ class CommonEditGroup extends React.Component {
       if (item.name === name) {
         const { width, height } = item;
         if (sizeType === 'width') {
-          const changeHeight = Math.ceil(value * (height / width));
+          let changeWidth = value;
+          if (value === '' || value === '0' || value === 0) {
+            changeWidth = 1;
+          }
+          const changeHeight = changeWidth * (height / width);
           return Object.assign({}, item, {
-            width: value,
+            width: changeWidth,
             height: changeHeight,
           });
         }
         if (sizeType === 'height') {
-          const changeWidth = Math.ceil(value * (width / height));
+          let changeHeight = value;
+          if (value === '' || value === '0' || value === 0) {
+            changeHeight = 1;
+          }
+          const changeWidth = changeHeight * (width / height);
           return Object.assign({}, item, {
-            height: value,
+            height: changeHeight,
             width: changeWidth,
           });
         }
@@ -282,6 +290,7 @@ class CommonEditGroup extends React.Component {
                         height={height}
                         x={x}
                         y={y}
+                        key={name}
                         onMouseDown={(e) => {
                           this.handleMouseDown(e, name);
                         }}
