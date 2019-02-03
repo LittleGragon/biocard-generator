@@ -14,3 +14,5 @@
 [问题反馈地址](https://github.com/LittleGragon/biocard-generator/issues)
 # 订阅
 [telegram 项目动态订阅](https://t.me/biocard_generator)
+# 用户组
+[telegram 用户组](https://t.me/joinchat/EC0WSheQ6oF6d75ucSO7fA)

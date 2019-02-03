@@ -253,11 +253,6 @@ class CommonEditGroup extends React.Component {
                       key={name}
                       style={style}
                       xlinkHref={xlinkHref}
-                      draggable="true"
-                      onDrop={this.drop}
-                      onDragStart={this.dragStart}
-                      onDragOver={event => event.preventDefault()}
-                      onDragEnd={this.dragEnd}
                       width={width}
                       height={height}
                       onMouseDown={(e) => {
