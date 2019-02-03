@@ -31,7 +31,9 @@ const styles = {
   backDesc: {
     fontSize: 25,
     lineHeight: '41px',
+    color: '#c3751a',
     fill: '#c3751a',
+    margin: 0,
   },
   unaligned: {
     fontSize: 29,
@@ -43,6 +45,8 @@ const styles = {
   backLongDesc: {
     fontSize: 21,
     fill: '#ffffff',
+    color: '#ffffff',
+    margin: 0,
   },
 };
 class EditForm extends React.Component {
@@ -123,7 +127,7 @@ class EditForm extends React.Component {
         type: 'image',
         editType: 'checkbox',
         width: 62,
-        height: 62 * (2032 / 1760),
+        height: Math.ceil(62 * (2032 / 1760)),
       }, {
         xlinkHref: niaBadge,
         name: 'niaBadge',
@@ -136,10 +140,12 @@ class EditForm extends React.Component {
         height: 105,
       }, {
         x: 90,
-        y: 335,
+        y: 330,
+        width: 576,
+        height: 443,
         name: 'long_desc',
         text: 'desc',
-        type: 'text',
+        type: 'multiText',
         editType: 'input',
         style: styles.backLongDesc,
       }, {
@@ -152,12 +158,14 @@ class EditForm extends React.Component {
         editType: 'input',
       }, {
         x: 91,
-        y: 260,
+        y: 230,
         name: 'desc',
         text: 'DESCRIPTION GOES HERE',
         style: styles.backDesc,
-        type: 'text',
+        type: 'multiText',
         editType: 'input',
+        height: 48,
+        width: 576,
       }, {
         x: 90,
         y: 870,
