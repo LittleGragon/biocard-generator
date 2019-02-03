@@ -284,10 +284,22 @@ class CommonEditGroup extends React.Component {
                     );
                   case 'multiText':
                     return (
-                      <foreignObject width="120" height="50" key={name}>
-                        <p style={style}>
-                          {text}
-                        </p>
+                      <foreignObject
+                        width={width}
+                        height={height}
+                        x={x}
+                        y={y}
+                        onMouseDown={(e) => {
+                          this.handleMouseDown(e, name);
+                        }}
+                        onMouseUp={this.handleMouseUp}
+                      >
+                        <p
+                          fill="#ffffff"
+                          style={Object.assign({}, style, {
+                            wordBreak: 'break-all',
+                          })}
+                        >{text}</p>
                       </foreignObject>
                     );
                   case 'dottedLines':
