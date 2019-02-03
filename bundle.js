@@ -68717,7 +68717,9 @@ var styles = {
   backDesc: {
     fontSize: 25,
     lineHeight: '41px',
-    fill: '#c3751a'
+    color: '#c3751a',
+    fill: '#c3751a',
+    margin: 0
   },
   unaligned: {
     fontSize: 29,
@@ -68728,7 +68730,9 @@ var styles = {
   },
   backLongDesc: {
     fontSize: 21,
-    fill: '#ffffff'
+    fill: '#ffffff',
+    color: '#ffffff',
+    margin: 0
   }
 };
 
@@ -68813,7 +68817,7 @@ var EditForm = function (_React$Component) {
         type: 'image',
         editType: 'checkbox',
         width: 62,
-        height: 62 * (2032 / 1760)
+        height: Math.ceil(62 * (2032 / 1760))
       }, {
         xlinkHref: _NIA_badge2.default,
         name: 'niaBadge',
@@ -68826,10 +68830,12 @@ var EditForm = function (_React$Component) {
         height: 105
       }, {
         x: 90,
-        y: 335,
+        y: 330,
+        width: 576,
+        height: 443,
         name: 'long_desc',
         text: 'desc',
-        type: 'text',
+        type: 'multiText',
         editType: 'input',
         style: styles.backLongDesc
       }, {
@@ -68842,12 +68848,14 @@ var EditForm = function (_React$Component) {
         editType: 'input'
       }, {
         x: 91,
-        y: 260,
+        y: 230,
         name: 'desc',
         text: 'DESCRIPTION GOES HERE',
         style: styles.backDesc,
-        type: 'text',
-        editType: 'input'
+        type: 'multiText',
+        editType: 'input',
+        height: 48,
+        width: 576
       }, {
         x: 90,
         y: 870,
@@ -69349,10 +69357,24 @@ var CommonEditGroup = function (_React$Component) {
                   case 'multiText':
                     return _react2.default.createElement(
                       'foreignObject',
-                      { width: '120', height: '50', key: name },
+                      {
+                        width: width,
+                        height: height,
+                        x: x,
+                        y: y,
+                        onMouseDown: function onMouseDown(e) {
+                          _this2.handleMouseDown(e, name);
+                        },
+                        onMouseUp: _this2.handleMouseUp
+                      },
                       _react2.default.createElement(
                         'p',
-                        { style: style },
+                        {
+                          fill: '#ffffff',
+                          style: Object.assign({}, style, {
+                            wordBreak: 'break-all'
+                          })
+                        },
                         text
                       )
                     );
