@@ -4,10 +4,8 @@ import _ from 'lodash';
 import Grid from '@material-ui/core/Grid';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import CropperImage from '$components/cropper-img';
 import './style';
@@ -213,7 +211,7 @@ class CommonEditGroup extends React.Component {
     window.removeEventListener('mouseup', this.handleMouseUp);
   }
   render() {
-    const { fields, imageUrl } = this.state;
+    const { fields } = this.state;
     return (
       <div>
         <Grid container>
@@ -323,8 +321,18 @@ class CommonEditGroup extends React.Component {
           </Grid>
           <Grid item>
             <form>
+              <FormControl component="legend">
+                <CropperImage
+                  onConfirm={this.handleConfirmCropper}
+                  buttonText="上传图片"
+                  onCropFile={(uploadedImageMessage) => {
+                    this.setState({
+                      uploadedImageMessage,
+                    });
+                  }}
+                />
+              </FormControl>
               <FormControl component="fieldset">
-                <FormLabel component="legend">checked to show component </FormLabel>
                 <FormGroup>
                   {fields.map((item) => {
                     const {
@@ -447,18 +455,8 @@ class CommonEditGroup extends React.Component {
                   }
                 })}
               </FormControl>
-              <FormControl component="legend">
-                <CropperImage
-                  onConfirm={this.handleConfirmCropper}
-                  buttonText="上传图片"
-                  onCropFile={(uploadedImageMessage) => {
-                    this.setState({
-                      uploadedImageMessage,
-                    });
-                  }}
-                />
-              </FormControl>
-              <FormControl component="legend">
+
+              {/* <FormControl component="legend">
                 <Button
                   color="primary"
                   download={'biocard'}
@@ -467,7 +465,7 @@ class CommonEditGroup extends React.Component {
                 >
                   下载
                 </Button>
-              </FormControl>
+              </FormControl> */}
             </form>
           </Grid>
         </Grid>
