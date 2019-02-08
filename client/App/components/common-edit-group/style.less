@@ -2,6 +2,7 @@
   perspective: 400px;
   transform-style: preserve-3d;
 }
+
 .biocard-container {
   width: 800px;
 }
@@ -9,23 +10,33 @@
   transform: scale(0.5);
   transform-origin: top left;
 }
+
 .biocard-svg {
   height: 1050px;
   width: 750px;
+
   .biocard-base {
     fill: #000000;
     height: 100%;
     width: 100%;
   }
+
   .agent-name-before {
     font-family: GeomGraphic-SemiBold;
     font-size: 68px;
     fill: #ffffff
   }
 }
+
 .preview {
   width: 750px;
   height: 1050px
 }
-.before-svg {
+
+.before-svg {}
+
+.current-edit-container {
+  position: relative;
+  height: auto;
+  top: -500px;
 }
