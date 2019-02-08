@@ -7,6 +7,7 @@ import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
+import Paper from '@material-ui/core/Paper';
 import CropperImage from '$components/cropper-img';
 import './style';
 
@@ -49,7 +50,7 @@ class CommonEditGroup extends React.Component {
       originX: 0,
       originY: 0,
       isDragging: false,
-      moveModelName: '',
+      editModuleName: '',
       uploadedImageMessage: {
         width: 0,
         height: 0,
@@ -179,7 +180,7 @@ class CommonEditGroup extends React.Component {
   }
   handleMouseDown = (e, name) => {
     this.setState({
-      moveModelName: name,
+      editModuleName: name,
     });
     this.coords = {
       x: e.pageX,
@@ -199,9 +200,9 @@ class CommonEditGroup extends React.Component {
     const diffY = (this.coords.y - e.pageY) / scalePoint;
     this.coords.x = e.pageX;
     this.coords.y = e.pageY;
-    const { fields, moveModelName } = this.state;
+    const { fields, editModuleName } = this.state;
     const newFields = fields.map((item) => {
-      if (item.name === moveModelName) {
+      if (item.name === editModuleName) {
         return Object.assign({}, item, {
           x: item.x - diffX,
           y: item.y - diffY,
@@ -219,109 +220,198 @@ class CommonEditGroup extends React.Component {
     window.removeEventListener('mouseup', this.handleMouseUp);
   }
   render() {
-    const { fields } = this.state;
+    const { fields, editModuleName } = this.state;
+    const currentItem = fields.find(item => {
+      return item.name === editModuleName;
+    });
+    const EditItem = (item) => {
+      if (!item) {
+        return null;
+      }
+      const {
+        editType,
+        name,
+        show,
+        y,
+        x,
+        width,
+        height,
+        text,
+      } = item;
+      return (
+        <div key={name}>
+          {editType === 'checkbox' && <FormControlLabel
+            key={name}
+            label={name}
+            control={
+              <Checkbox
+                name={name}
+                checked={show}
+                onChange={this.handleCheck}
+              />
+            }
+          />
+          }
+          {item.editType === 'input' && <TextField
+            key={name}
+            name={name}
+            placeholder={name}
+            value={text}
+            label={name}
+            onChange={this.handleChange}
+          />}
+          <br />
+          <TextField
+            name={name}
+            margin="normal"
+            type="number"
+            label="y"
+            value={y}
+            onChange={(e) => {
+              this.handleChangeLocation(e, 'y');
+            }}
+          />
+          <br />
+          <TextField
+            name={name}
+            margin="normal"
+            type="number"
+            label="x"
+            value={x}
+            onChange={(e) => {
+              this.handleChangeLocation(e, 'x');
+            }}
+          />
+          <br />
+          <TextField
+            name={name}
+            margin="normal"
+            type="number"
+            label="width"
+            value={width}
+            onChange={(e) => {
+              this.handleChangeSize(e, 'width');
+            }}
+          />
+          <br />
+          <TextField
+            name={name}
+            margin="normal"
+            type="number"
+            label="height"
+            value={height}
+            onChange={(e) => {
+              this.handleChangeSize(e, 'height');
+            }}
+          />
+        </div>
+      );
+    };
     return (
       <div>
         <Grid container>
           <Grid item>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              height={1050}
-              width={750}
-              className="biocard-svg before-svg"
-              ref={this.biocardRef}
-              id="cardSvg"
-            >
-              <rect
-                style={styles.base}
-              />
-              {fields.map((item) => {
-                const {
-                  type,
-                  name,
-                  show,
-                  style,
-                  xlinkHref,
-                  x,
-                  y,
-                  text,
-                  stroke,
-                  strokeDasharray,
-                  strokeWidth,
-                  d,
-                  width,
-                  height,
-                } = item;
-                switch (type) {
-                  case 'image':
-                    return show ? <image
-                      id={name}
-                      x={x}
-                      y={y}
-                      key={name}
-                      style={style}
-                      xlinkHref={xlinkHref}
-                      width={width}
-                      height={height}
-                      onMouseDown={(e) => {
-                        this.handleMouseDown(e, name);
-                      }}
-                      onMouseUp={this.handleMouseUp}
-                    /> : null;
-                  case 'text':
-                    return (
-                      <text
-                        key={name}
+            <Paper className="biocard-paper">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height={1050}
+                width={750}
+                className="biocard-svg before-svg"
+                ref={this.biocardRef}
+                id="cardSvg"
+              >
+                <rect
+                  style={styles.base}
+                />
+                {fields.map((item) => {
+                  const {
+                    type,
+                    name,
+                    show,
+                    style,
+                    xlinkHref,
+                    x,
+                    y,
+                    text,
+                    stroke,
+                    strokeDasharray,
+                    strokeWidth,
+                    d,
+                    width,
+                    height,
+                  } = item;
+                  switch (type) {
+                    case 'image':
+                      return show ? <image
+                        id={name}
                         x={x}
                         y={y}
+                        key={name}
                         style={style}
-                        onMouseDown={(e) => {
-                          this.handleMouseDown(e, name);
-                        }}
-                        onMouseUp={this.handleMouseUp}
-                      >
-                        {text}
-                      </text>
-                    );
-                  case 'multiText':
-                    return (
-                      <foreignObject
+                        xlinkHref={xlinkHref}
                         width={width}
                         height={height}
-                        x={x}
-                        y={y}
-                        key={name}
                         onMouseDown={(e) => {
                           this.handleMouseDown(e, name);
                         }}
                         onMouseUp={this.handleMouseUp}
-                      >
-                        <p
-                          fill="#ffffff"
-                          style={Object.assign({}, style, {
-                            wordBreak: 'break-all',
-                          })}
-                        >{text}</p>
-                      </foreignObject>
-                    );
-                  case 'dottedLines':
-                    return (
-                      <g
-                        key={name}
-                        stroke={stroke}
-                        strokeWidth={strokeWidth}
-                      >
-                        <path
-                          strokeDasharray={strokeDasharray}
-                          d={d}
-                        />
-                      </g>
-                    );
-                  default:
-                    return null;
-                }
-              })}
-            </svg>
+                      /> : null;
+                    case 'text':
+                      return (
+                        <text
+                          key={name}
+                          x={x}
+                          y={y}
+                          style={style}
+                          onMouseDown={(e) => {
+                            this.handleMouseDown(e, name);
+                          }}
+                          onMouseUp={this.handleMouseUp}
+                        >
+                          {text}
+                        </text>
+                      );
+                    case 'multiText':
+                      return (
+                        <foreignObject
+                          width={width}
+                          height={height}
+                          x={x}
+                          y={y}
+                          key={name}
+                          onMouseDown={(e) => {
+                            this.handleMouseDown(e, name);
+                          }}
+                          onMouseUp={this.handleMouseUp}
+                        >
+                          <p
+                            fill="#ffffff"
+                            style={Object.assign({}, style, {
+                              wordBreak: 'break-all',
+                            })}
+                          >{text}</p>
+                        </foreignObject>
+                      );
+                    case 'dottedLines':
+                      return (
+                        <g
+                          key={name}
+                          stroke={stroke}
+                          strokeWidth={strokeWidth}
+                        >
+                          <path
+                            strokeDasharray={strokeDasharray}
+                            d={d}
+                          />
+                        </g>
+                      );
+                    default:
+                      return null;
+                  }
+                })}
+              </svg>
+            </Paper>
+            {EditItem(currentItem)}
           </Grid>
           <Grid item>
             <form>
@@ -339,124 +429,13 @@ class CommonEditGroup extends React.Component {
               <FormControl component="fieldset">
                 <FormGroup>
                   {fields.map((item) => {
-                    const {
-                      editType,
-                      name,
-                      show,
-                      y,
-                      x,
-                      width,
-                      height,
-                    } = item;
-                    switch (editType) {
-                      case 'checkbox':
-                        return (
-                          <div key={name}>
-                            <FormControlLabel
-                              key={name}
-                              label={name}
-                              control={
-                                <Checkbox
-                                  name={name}
-                                  checked={show}
-                                  onChange={this.handleCheck}
-                                />
-                              }
-                            />
-                            <br />
-                            <TextField
-                              name={name}
-                              margin="normal"
-                              type="number"
-                              label="y"
-                              value={y}
-                              onChange={(e) => {
-                                this.handleChangeLocation(e, 'y');
-                              }}
-                            />
-                            <br />
-                            <TextField
-                              name={name}
-                              margin="normal"
-                              type="number"
-                              label="x"
-                              value={x}
-                              onChange={(e) => {
-                                this.handleChangeLocation(e, 'x');
-                              }}
-                            />
-                            <br />
-                            <TextField
-                              name={name}
-                              margin="normal"
-                              type="number"
-                              label="width"
-                              value={width}
-                              onChange={(e) => {
-                                this.handleChangeSize(e, 'width');
-                              }}
-                            />
-                            <br />
-                            <TextField
-                              name={name}
-                              margin="normal"
-                              type="number"
-                              label="height"
-                              value={height}
-                              onChange={(e) => {
-                                this.handleChangeSize(e, 'height');
-                              }}
-                            />
-                          </div>
-                        );
-                      default:
-                        return null;
-                    }
+                    return EditItem(item);
                   })}
                 </FormGroup>
               </FormControl>
               <FormControl component="legend">
                 {fields.map((item) => {
-                  const { name, text, editType, y, x } = item;
-                  switch (editType) {
-                    case 'input':
-                      return (
-                        <div key={name}>
-                          <TextField
-                            key={name}
-                            name={name}
-                            placeholder={name}
-                            value={text}
-                            label={name}
-                            onChange={this.handleChange}
-                          />
-                          <br />
-                          <TextField
-                            variant="outlined"
-                            name={name}
-                            margin="normal"
-                            type="number"
-                            value={y}
-                            onChange={(e) => {
-                              this.handleChangeLocation(e, 'y');
-                            }}
-                          />
-                          <br />
-                          <TextField
-                            variant="outlined"
-                            name={name}
-                            margin="normal"
-                            type="number"
-                            value={x}
-                            onChange={(e) => {
-                              this.handleChangeLocation(e, 'x');
-                            }}
-                          />
-                        </div>
-                      );
-                    default:
-                      return null;
-                  }
+                  return EditItem(item);
                 })}
               </FormControl>
 
@@ -473,7 +452,7 @@ class CommonEditGroup extends React.Component {
             </form>
           </Grid>
         </Grid>
-      </div>
+      </div >
     );
   }
 }
