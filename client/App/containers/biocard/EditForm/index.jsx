@@ -32,7 +32,6 @@ const styles = {
     fontSize: 25,
     lineHeight: '41px',
     color: '#c3751a',
-    fill: '#c3751a',
     margin: 0,
   },
   unaligned: {
@@ -44,7 +43,6 @@ const styles = {
   },
   backLongDesc: {
     fontSize: 21,
-    fill: '#ffffff',
     color: '#ffffff',
     margin: 0,
   },

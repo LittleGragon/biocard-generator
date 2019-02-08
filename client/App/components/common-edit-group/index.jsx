@@ -9,38 +9,9 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import CropperImage from '$components/cropper-img';
+import ColorPicker from '$components/color-picker';
 import './style';
 
-const styles = {
-  biocardContainer: {
-  },
-  base: {
-    background: '#000000',
-    width: '100%',
-    height: '100%',
-  },
-  agentName: {
-    fontFamily: 'GeomGraphic-SemiBold',
-    fontSize: 68,
-    fill: '#ffffff',
-  },
-  backAgentName: {
-    fontSize: 71,
-    fill: '#ffffff',
-  },
-  backDesc: {
-    fontSize: 25,
-    lineHeight: '41px',
-    fill: '#c3751a',
-  },
-  unaligned: {
-    fontSize: 29,
-    fill: '#c3751a',
-  },
-  backLogo: {
-    width: 62,
-  },
-};
 class CommonEditGroup extends React.Component {
   constructor(props) {
     super(props);
@@ -54,6 +25,12 @@ class CommonEditGroup extends React.Component {
       uploadedImageMessage: {
         width: 0,
         height: 0,
+      },
+      editBase: false,
+      baseStyle: {
+        fill: '#000000',
+        width: '100%',
+        height: '100%',
       },
     };
     this.biocardRef = React.createRef();
@@ -145,6 +122,9 @@ class CommonEditGroup extends React.Component {
       key: coordinateType,
     });
   }
+  /**
+   * 修改图片尺寸的函数
+  */
   handleChangeSize = (e, sizeType) => {
     const { name, value } = e.target;
     const { fields } = this.state;
@@ -181,6 +161,7 @@ class CommonEditGroup extends React.Component {
   handleMouseDown = (e, name) => {
     this.setState({
       editModuleName: name,
+      editBase: false,
     });
     this.coords = {
       x: e.pageX,
@@ -212,6 +193,31 @@ class CommonEditGroup extends React.Component {
     });
     this.setFields(newFields);
   }
+  /**
+   * 修改颜色
+  */
+  handleChangeColor = ({ key, value, name }) => {
+    const { fields } = this.state;
+    const newFields = fields.map((item) => {
+      if (item.name === name) {
+        let style = _.get(item, 'style', {});
+        style = Object.assign({}, style, {
+          [key]: value,
+        });
+        return Object.assign({}, item, {
+          style,
+        });
+      }
+      return item;
+    });
+    this.setFields(newFields);
+  }
+  handleEditBasePanel = () => {
+    this.setState({
+      editModuleName: '',
+      editBase: true,
+    });
+  }
   componentDidMount() {
     this.handleInitData();
   }
@@ -220,8 +226,8 @@ class CommonEditGroup extends React.Component {
     window.removeEventListener('mouseup', this.handleMouseUp);
   }
   render() {
-    const { fields, editModuleName } = this.state;
-    const currentItem = fields.find(item => {
+    const { fields, editModuleName, editBase, baseStyle } = this.state;
+    const currentItem = fields.find((item) => {
       return item.name === editModuleName;
     });
     const EditItem = (item) => {
@@ -237,9 +243,38 @@ class CommonEditGroup extends React.Component {
         width,
         height,
         text,
+        style = {},
       } = item;
+      let colorKey = '';
+      if (style.fill) {
+        colorKey = 'fill';
+      }
+      if (style.color) {
+        colorKey = 'color';
+      }
+      const color = style[colorKey];
       return (
         <div key={name}>
+          {color && <ColorPicker
+            color={color}
+            onChange={({ hex }) => {
+              this.handleChangeColor({
+                value: hex,
+                name,
+                key: colorKey,
+              });
+            }}
+          />}
+          {color && <TextField
+            name={name}
+            value={color}
+            label={'color'}
+            onChange={(e) => {
+              const { value } = e.target;
+              this.handleChangeColor({ value, name, key: colorKey });
+            }}
+          />}
+          <br />
           {editType === 'checkbox' && <FormControlLabel
             key={name}
             label={name}
@@ -321,7 +356,8 @@ class CommonEditGroup extends React.Component {
                 id="cardSvg"
               >
                 <rect
-                  style={styles.base}
+                  style={baseStyle}
+                  onClick={this.handleEditBasePanel}
                 />
                 {fields.map((item) => {
                   const {
@@ -411,7 +447,22 @@ class CommonEditGroup extends React.Component {
                 })}
               </svg>
             </Paper>
-            {EditItem(currentItem)}
+            {<div className="current-edit-container">
+              {editBase && <ColorPicker
+                color={baseStyle.color}
+                onChange={({ hex }) => {
+                  const { baseStyle: originStyle } = this.state;
+                  const newStyle = {
+                    ...originStyle,
+                    fill: hex,
+                  };
+                  this.setState({
+                    baseStyle: newStyle,
+                  });
+                }}
+              />}
+              {EditItem(currentItem)}
+            </div>}
           </Grid>
           <Grid item>
             <form>
