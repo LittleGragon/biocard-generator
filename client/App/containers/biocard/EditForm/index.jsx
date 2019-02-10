@@ -10,6 +10,7 @@ import eighteenYearBadge from '../images/18_year_badge.png';
 import backColorBox from '../images/colors_box.png';
 import logo from '../images/ingress_logo.png';
 import niaBadge from '../images/NIA_badge.png';
+import './style.less';
 
 const styles = {
   biocardContainer: {
@@ -54,6 +55,10 @@ class EditForm extends React.Component {
       tabValue: 'before',
       imageUrl: '',
       beforeFileds: [{
+        type: 'basePanel',
+        style: styles.base,
+        name: 'beforeBase',
+      }, {
         xlinkHref: logoBadge,
         x: 59,
         y: 57,
@@ -106,6 +111,10 @@ class EditForm extends React.Component {
       },
       ],
       backFields: [{
+        type: 'basePanel',
+        style: styles.base,
+        name: 'backBase',
+      }, {
         xlinkHref: backColorBox,
         name: 'backColorBox',
         x: 91,
