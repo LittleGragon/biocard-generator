@@ -27,11 +27,6 @@ class CommonEditGroup extends React.Component {
         height: 0,
       },
       editBase: false,
-      baseStyle: {
-        fill: '#000000',
-        width: '100%',
-        height: '100%',
-      },
     };
     this.biocardRef = React.createRef();
     this.downloadRef = React.createRef();
@@ -104,8 +99,11 @@ class CommonEditGroup extends React.Component {
       width,
       height,
     };
-    fields.unshift(newImage);
+    fields.splice(1, 0, newImage);
     this.setFields(fields);
+    this.setState({
+      editModuleName: imageName,
+    });
   }
   handleInitData = () => {
     const { fields } = this.props;
@@ -226,7 +224,7 @@ class CommonEditGroup extends React.Component {
     window.removeEventListener('mouseup', this.handleMouseUp);
   }
   render() {
-    const { fields, editModuleName, editBase, baseStyle } = this.state;
+    const { fields, editModuleName } = this.state;
     const currentItem = fields.find((item) => {
       return item.name === editModuleName;
     });
@@ -243,6 +241,7 @@ class CommonEditGroup extends React.Component {
         width,
         height,
         text,
+        type,
         style = {},
       } = item;
       let colorKey = '';
@@ -255,16 +254,18 @@ class CommonEditGroup extends React.Component {
       const color = style[colorKey];
       return (
         <div key={name}>
-          {color && <ColorPicker
-            color={color}
-            onChange={({ hex }) => {
-              this.handleChangeColor({
-                value: hex,
-                name,
-                key: colorKey,
-              });
-            }}
-          />}
+          <FormControl component="legend">
+            {color && <ColorPicker
+              color={color}
+              onChange={({ hex }) => {
+                this.handleChangeColor({
+                  value: hex,
+                  name,
+                  key: colorKey,
+                });
+              }}
+            />}
+          </FormControl>
           {color && <TextField
             name={name}
             value={color}
@@ -287,38 +288,44 @@ class CommonEditGroup extends React.Component {
             }
           />
           }
-          {item.editType === 'input' && <TextField
-            key={name}
-            name={name}
-            placeholder={name}
-            value={text}
-            label={name}
-            onChange={this.handleChange}
-          />}
-          <br />
-          <TextField
-            name={name}
-            margin="normal"
-            type="number"
-            label="y"
-            value={y}
-            onChange={(e) => {
-              this.handleChangeLocation(e, 'y');
-            }}
-          />
-          <br />
-          <TextField
-            name={name}
-            margin="normal"
-            type="number"
-            label="x"
-            value={x}
-            onChange={(e) => {
-              this.handleChangeLocation(e, 'x');
-            }}
-          />
-          <br />
-          <TextField
+          {item.editType === 'input' && <div>
+            <TextField
+              key={name}
+              name={name}
+              placeholder={name}
+              value={text}
+              label={name}
+              onChange={this.handleChange}
+            />
+            <br />
+          </div>}
+          {type !== 'basePanel' && <div>
+            <TextField
+              name={name}
+              margin="normal"
+              type="number"
+              label="y"
+              value={y}
+              onChange={(e) => {
+                this.handleChangeLocation(e, 'y');
+              }}
+            />
+            <br />
+          </div>}
+          {type !== 'basePanel' && <div>
+            <TextField
+              name={name}
+              margin="normal"
+              type="number"
+              label="x"
+              value={x}
+              onChange={(e) => {
+                this.handleChangeLocation(e, 'x');
+              }}
+            />
+            <br />
+          </div>}
+          {type !== 'basePanel' && <TextField
             name={name}
             margin="normal"
             type="number"
@@ -327,25 +334,27 @@ class CommonEditGroup extends React.Component {
             onChange={(e) => {
               this.handleChangeSize(e, 'width');
             }}
-          />
+          />}
           <br />
-          <TextField
-            name={name}
-            margin="normal"
-            type="number"
-            label="height"
-            value={height}
-            onChange={(e) => {
-              this.handleChangeSize(e, 'height');
-            }}
-          />
+          {type !== 'basePanel' && <div>
+            <TextField
+              name={name}
+              margin="normal"
+              type="number"
+              label="height"
+              value={height}
+              onChange={(e) => {
+                this.handleChangeSize(e, 'height');
+              }}
+            />
+          </div>}
         </div>
       );
     };
     return (
       <div>
         <Grid container>
-          <Grid item>
+          <Grid item lg={8}>
             <Paper className="biocard-paper">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -355,10 +364,6 @@ class CommonEditGroup extends React.Component {
                 ref={this.biocardRef}
                 id="cardSvg"
               >
-                <rect
-                  style={baseStyle}
-                  onClick={this.handleEditBasePanel}
-                />
                 {fields.map((item) => {
                   const {
                     type,
@@ -441,6 +446,16 @@ class CommonEditGroup extends React.Component {
                           />
                         </g>
                       );
+                    case 'basePanel':
+                      return (<rect
+                        style={style}
+                        key={name}
+                        onClick={() => {
+                          this.setState({
+                            editModuleName: name,
+                          });
+                        }}
+                      />);
                     default:
                       return null;
                   }
@@ -448,23 +463,10 @@ class CommonEditGroup extends React.Component {
               </svg>
             </Paper>
             {<div className="current-edit-container">
-              {editBase && <ColorPicker
-                color={baseStyle.color}
-                onChange={({ hex }) => {
-                  const { baseStyle: originStyle } = this.state;
-                  const newStyle = {
-                    ...originStyle,
-                    fill: hex,
-                  };
-                  this.setState({
-                    baseStyle: newStyle,
-                  });
-                }}
-              />}
               {EditItem(currentItem)}
             </div>}
           </Grid>
-          <Grid item>
+          <Grid item lg={4}>
             <form>
               <FormControl component="legend">
                 <CropperImage
