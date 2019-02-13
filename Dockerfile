@@ -1,23 +1,10 @@
-FROM ubuntu
+FROM circleci/node:latest-browsers
 
-RUN apt-get update
-
-RUN apt-get install nodejs -y
-
-RUN apt-get install npm -y
-
-CMD ["npm", "-v"]
-
-RUN apt-get install yarn -y
-
+WORKDIR /usr/src/app/
+USER root
 COPY package.json ./
-
-CMD ["yarn", "install"]
+RUN yarn
 
 COPY ./ ./
 
-CMD ["npm" "run" "build:prod"]
-
-CMD ["npm", "run", "start"]
-
-EXPOSE 7001
+CMD ["npm", "start"]
