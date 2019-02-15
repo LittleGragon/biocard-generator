@@ -3,12 +3,13 @@
 # 开发
 ## 环境准备
 * [nodejs](https://nodejs.org)
+* [yarn](https://yarnpkg.com/zh-Hans/)
 ## 安装依赖
-```npm install```
+```yarn install```
 ## 启动编译
-```npm run build:dev```
+```yarn run build:dev```
 ## 启动网站开发模式
-```npm run dev```
+```yarn run dev```
 > 打开 [http://localhost:7001](http://localhost:7001)
 # 问题反馈
 [问题反馈地址](https://github.com/LittleGragon/biocard-generator/issues)
