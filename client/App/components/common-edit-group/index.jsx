@@ -7,9 +7,11 @@ import FormControl from '@material-ui/core/FormControl';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
+import Drawer from '@material-ui/core/Drawer';
 import Paper from '@material-ui/core/Paper';
 import CropperImage from '$components/cropper-img';
 import ColorPicker from '$components/color-picker';
+import ColorSelector from '$components/color-selector';
 import './style';
 
 class CommonEditGroup extends React.Component {
@@ -254,6 +256,7 @@ class CommonEditGroup extends React.Component {
       const color = style[colorKey];
       return (
         <div key={name}>
+          <ColorSelector />
           <FormControl component="legend">
             {color && <ColorPicker
               color={color}
@@ -353,6 +356,44 @@ class CommonEditGroup extends React.Component {
     };
     return (
       <div>
+        <Drawer variant="permanent">
+          <form>
+            <FormControl component="legend">
+              <CropperImage
+                onConfirm={this.handleConfirmCropper}
+                buttonText="上传图片"
+                onCropFile={(uploadedImageMessage) => {
+                  this.setState({
+                    uploadedImageMessage,
+                  });
+                }}
+              />
+            </FormControl>
+            <FormControl component="fieldset">
+              <FormGroup>
+                {fields.map((item) => {
+                  return EditItem(item);
+                })}
+              </FormGroup>
+            </FormControl>
+            <FormControl component="legend">
+              {fields.map((item) => {
+                return EditItem(item);
+              })}
+            </FormControl>
+
+            {/* <FormControl component="legend">
+                <Button
+                  color="primary"
+                  download={'biocard'}
+                  href={imageUrl}
+                  ref={this.downloadRef}
+                >
+                  下载
+                </Button>
+              </FormControl> */}
+          </form>
+        </Drawer>
         <Grid container>
           <Grid item lg={8}>
             <Paper className="biocard-paper">
@@ -462,47 +503,11 @@ class CommonEditGroup extends React.Component {
                 })}
               </svg>
             </Paper>
+          </Grid>
+          <Grid item lg={4}>
             {<div className="current-edit-container">
               {EditItem(currentItem)}
             </div>}
-          </Grid>
-          <Grid item lg={4}>
-            <form>
-              <FormControl component="legend">
-                <CropperImage
-                  onConfirm={this.handleConfirmCropper}
-                  buttonText="上传图片"
-                  onCropFile={(uploadedImageMessage) => {
-                    this.setState({
-                      uploadedImageMessage,
-                    });
-                  }}
-                />
-              </FormControl>
-              <FormControl component="fieldset">
-                <FormGroup>
-                  {fields.map((item) => {
-                    return EditItem(item);
-                  })}
-                </FormGroup>
-              </FormControl>
-              <FormControl component="legend">
-                {fields.map((item) => {
-                  return EditItem(item);
-                })}
-              </FormControl>
-
-              {/* <FormControl component="legend">
-                <Button
-                  color="primary"
-                  download={'biocard'}
-                  href={imageUrl}
-                  ref={this.downloadRef}
-                >
-                  下载
-                </Button>
-              </FormControl> */}
-            </form>
           </Grid>
         </Grid>
       </div >
