@@ -11,7 +11,6 @@ import Drawer from '@material-ui/core/Drawer';
 import Paper from '@material-ui/core/Paper';
 import CropperImage from '$components/cropper-img';
 import ColorPicker from '$components/color-picker';
-import ColorSelector from '$components/color-selector';
 import './style';
 
 class CommonEditGroup extends React.Component {
@@ -256,7 +255,6 @@ class CommonEditGroup extends React.Component {
       const color = style[colorKey];
       return (
         <div key={name}>
-          <ColorSelector />
           <FormControl component="legend">
             {color && <ColorPicker
               color={color}
