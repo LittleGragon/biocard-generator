@@ -11,6 +11,15 @@
 ## 启动网站开发模式
 ```yarn run dev```
 > 打开 [http://localhost:7001](http://localhost:7001)
+
+# 生产环境部署
+## 环境准备
+* [docker](https://docs.docker.com/)
+* [docker-compose](https://docs.docker.com/compose/)
+## 启动命令
+```
+docker-compose up -d
+```
 # 问题反馈
 [问题反馈地址](https://github.com/LittleGragon/biocard-generator/issues)
 # 订阅

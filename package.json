@@ -75,8 +75,10 @@
     "autod": "autod",
     "build:dev": "webpack --config ./webpack.config.dev.js --watch",
     "build:pages": "webpack --config ./webpack.config.pages.js",
+    "build:prod": "webpck --config webpack.config.js",
     "pre-commit": [
       "lint"
-    ]
+    ],
+    "docker-build": "docker-compose up -d"
   }
 }
