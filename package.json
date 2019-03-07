@@ -63,6 +63,7 @@
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3",
     "webpack-hot-middleware": "^2.18.2",
+    "webpack-merge": "^4.2.1",
     "webstorm-disable-index": "^1.2.0"
   },
   "scripts": {
@@ -74,9 +75,9 @@
     "lint": "eslint --ext js,jsx ./client",
     "ci": "npm run lint && npm run cov",
     "autod": "autod",
-    "build:dev": "webpack --config ./webpack.config.dev.js --mode development --watch",
+    "build:dev": "webpack --config ./webpack.config.dev.js",
     "build:pages": "webpack --config ./webpack.config.pages.js",
-    "build:prod": "webpack --config webpack.config.prod.js --mode production",
+    "build:prod": "webpack --config webpack.config.prod.js",
     "pre-commit": [
       "lint"
     ],

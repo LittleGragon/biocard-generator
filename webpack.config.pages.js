@@ -1,7 +1,11 @@
-const config = require('./webpack.config.base');
 const path = require('path');
-config.output = {
-  filename: 'bundle.js',
-  path: path.resolve(__dirname, 'public/pages'),
-}
-module.exports = config;
+const merge = require('webpack-merge');
+const config = require('./webpack.config.base');
+const pagesBuildConfig = merge(config, {
+  mode: 'production',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'public/pages'),
+  },
+})
+module.exports = pagesBuildConfig;
