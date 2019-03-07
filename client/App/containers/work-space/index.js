@@ -9,10 +9,10 @@ const styles = {
 };
 class WorkSpace extends React.Component {
   render() {
-    const { classes } = this.props;
+    const { classes, children } = this.props;
     return (
       <div id="workspace" className={classes.workspace}>
-        {this.props.children}
+        {children}
       </div>
     );
   }

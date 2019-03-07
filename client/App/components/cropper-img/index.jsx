@@ -26,6 +26,7 @@ class CropperImage extends React.Component {
     this.fileInputRef = React.createRef();
     this.cropperRef = React.createRef();
   }
+
   handleCrop = () => {
     const { onCropFile } = this.props;
     const dataUrl = this.cropperRef.current.getCroppedCanvas().toDataURL();
@@ -43,14 +44,17 @@ class CropperImage extends React.Component {
       cropperUrl: dataUrl,
     });
   }
+
   handleClose = () => {
     this.setState({
       open: false,
     });
   }
+
   handleSelectFile = () => {
     this.fileInputRef.current.click();
   }
+
   handleFileChange = async (e) => {
     const { onFileChange } = this.props;
     const file = e.target.files[0];
@@ -71,6 +75,7 @@ class CropperImage extends React.Component {
     };
     return dataUrl;
   }
+
   handleGetDataUrl = (file) => {
     const reader = new FileReader();
     return new Promise((resolve, reject) => {
@@ -80,6 +85,7 @@ class CropperImage extends React.Component {
       reader.readAsDataURL(file);
     });
   }
+
   handleOk = () => {
     const { onConfirm } = this.props;
     const { cropperUrl } = this.state;
@@ -88,8 +94,9 @@ class CropperImage extends React.Component {
       open: false,
     });
   }
+
   render() {
-    const { open } = this.state;
+    const { open, originFileUrl } = this.state;
     const { buttonText, classes } = this.props;
     return (
       <div className="cropper-img">
@@ -118,7 +125,7 @@ class CropperImage extends React.Component {
             <Cropper
               ref={this.cropperRef}
               crop={this.handleCrop}
-              src={this.state.originFileUrl}
+              src={originFileUrl}
               guides={false}
               style={{ height: '100%', width: 'auto' }}
             />

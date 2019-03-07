@@ -7,12 +7,14 @@ class ColorPicker extends React.Component {
     super(props);
     this.state = {};
   }
+
   handleInitProps = () => {
     const { color } = this.props;
     this.setState({
       color,
     });
   }
+
   handleChange = (color) => {
     const { onChange } = this.props;
     this.setState({
@@ -20,9 +22,11 @@ class ColorPicker extends React.Component {
     });
     onChange(color);
   }
+
   componentDidMount() {
     this.handleInitProps();
   }
+
   render() {
     const { color } = this.state;
     return (
