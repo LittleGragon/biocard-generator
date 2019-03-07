@@ -5,6 +5,7 @@ import './style.less';
 
 class MainContent extends React.Component {
   render() {
+    const { children } = this.props;
     return (
       <div className="container">
         <Grid container spacing={8}>
@@ -12,7 +13,7 @@ class MainContent extends React.Component {
             {/* {this.props.leftMenu} */}
           </Grid>
           <Grid item lg={10}>
-            {this.props.children}
+            {children}
           </Grid>
         </Grid>
       </div>

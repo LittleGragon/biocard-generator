@@ -5,3 +5,4 @@ logs
 coverage
 app/public
 .idea
+yarn-error.log

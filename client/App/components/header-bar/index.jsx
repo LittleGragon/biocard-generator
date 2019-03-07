@@ -46,23 +46,27 @@ class HeaderBar extends React.Component {
       }],
     };
   }
+
   handleSetAnchorEl = (e) => {
     this.setState({
       anchorEl: e.currentTarget,
       open: true,
     });
   }
+
   handleClose = () => {
     this.setState({
       open: false,
       anchorEl: null,
     });
   }
+
   handleDownLoadFile = (mime) => {
     window.downloadMime = mime;
     window.dispatchEvent(window.addEvents.downloadImage);
     this.handleClose();
   }
+
   render() {
     const { classes } = this.props;
     const { fileTypes, open, anchorEl } = this.state;
