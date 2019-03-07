@@ -13,14 +13,16 @@ const menus = [{
 }];
 class LeftMenu extends React.Component {
   goTo(url) {
-    this.context.router.push(url);
+    const { router } = this.context;
+    router.push(url);
   }
+
   render() {
     return (
       <List className="menus">
         {menus.map((item) => {
           return (
-            <ListItem button key={item.name} >
+            <ListItem button key={item.name}>
               <ListItemIcon>
                 <Icon>
                   {item.icon}

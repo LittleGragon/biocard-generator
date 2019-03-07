@@ -9,6 +9,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
 import Drawer from '@material-ui/core/Drawer';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
 import CropperImage from '$components/cropper-img';
 import ColorPicker from '$components/color-picker';
 import './style';
@@ -19,27 +20,28 @@ class CommonEditGroup extends React.Component {
     this.state = {
       fields: [],
       imageUrl: '',
-      originX: 0,
-      originY: 0,
-      isDragging: false,
       editModuleName: '',
       uploadedImageMessage: {
         width: 0,
         height: 0,
       },
-      editBase: false,
     };
     this.biocardRef = React.createRef();
     this.downloadRef = React.createRef();
   }
+
   setFields(fields) {
     const { onChange } = this.props;
-    this.setState({
-      fields,
+    this.setState((state) => {
+      return {
+        ...state,
+        fields,
+      };
     });
     onChange(fields);
     this.setImageUrl();
   }
+
   handleChangeFields = ({ key, value, name }) => {
     const { fields } = this.state;
     const newFields = fields.map((item) => {
@@ -52,6 +54,7 @@ class CommonEditGroup extends React.Component {
     });
     this.setFields(newFields);
   }
+
   handleCheck = (e) => {
     const { checked, name } = e.target;
     this.handleChangeFields({
@@ -60,6 +63,7 @@ class CommonEditGroup extends React.Component {
       name,
     });
   }
+
   handleChange = (e) => {
     const { name, value } = e.target;
     this.handleChangeFields({
@@ -68,6 +72,7 @@ class CommonEditGroup extends React.Component {
       value,
     });
   }
+
   setImageUrl = () => {
     setTimeout(() => {
       const previewSvg = this.biocardRef.current;
@@ -83,6 +88,7 @@ class CommonEditGroup extends React.Component {
       });
     });
   }
+
   handleConfirmCropper = (url) => {
     const { fields, uploadedImageMessage } = this.state;
     const width = _.get(uploadedImageMessage, 'width', '');
@@ -106,10 +112,12 @@ class CommonEditGroup extends React.Component {
       editModuleName: imageName,
     });
   }
+
   handleInitData = () => {
     const { fields } = this.props;
     this.setFields(fields);
   }
+
   /**
    * 用于修改模块位置的函数
   */
@@ -121,6 +129,7 @@ class CommonEditGroup extends React.Component {
       key: coordinateType,
     });
   }
+
   /**
    * 修改图片尺寸的函数
   */
@@ -157,10 +166,10 @@ class CommonEditGroup extends React.Component {
     });
     this.setFields(newFields);
   }
+
   handleMouseDown = (e, name) => {
     this.setState({
       editModuleName: name,
-      editBase: false,
     });
     this.coords = {
       x: e.pageX,
@@ -169,11 +178,13 @@ class CommonEditGroup extends React.Component {
     document.addEventListener('mousemove', this.handleMouseMove);
     document.addEventListener('mouseup', this.handleMouseUp);
   }
+
   handleMouseUp = () => {
     document.removeEventListener('mousemove', this.handleMouseMove);
     document.removeEventListener('mouseup', this.handleMouseUp);
     this.coords = {};
   }
+
   handleMouseMove = (e) => {
     const scalePoint = 0.5;
     const diffX = (this.coords.x - e.pageX) / scalePoint;
@@ -192,6 +203,7 @@ class CommonEditGroup extends React.Component {
     });
     this.setFields(newFields);
   }
+
   /**
    * 修改颜色
   */
@@ -211,21 +223,24 @@ class CommonEditGroup extends React.Component {
     });
     this.setFields(newFields);
   }
+
   handleEditBasePanel = () => {
     this.setState({
       editModuleName: '',
-      editBase: true,
     });
   }
+
   componentDidMount() {
     this.handleInitData();
   }
+
   componentWillUnmount() {
     window.removeEventListener('mousemove', this.handleMouseMove);
     window.removeEventListener('mouseup', this.handleMouseUp);
   }
+
   render() {
-    const { fields, editModuleName } = this.state;
+    const { fields, editModuleName, imageUrl } = this.state;
     const currentItem = fields.find((item) => {
       return item.name === editModuleName;
     });
@@ -256,99 +271,115 @@ class CommonEditGroup extends React.Component {
       return (
         <div key={name}>
           <FormControl component="legend">
-            {color && <ColorPicker
-              color={color}
-              onChange={({ hex }) => {
-                this.handleChangeColor({
-                  value: hex,
-                  name,
-                  key: colorKey,
-                });
-              }}
-            />}
-          </FormControl>
-          {color && <TextField
-            name={name}
-            value={color}
-            label={'color'}
-            onChange={(e) => {
-              const { value } = e.target;
-              this.handleChangeColor({ value, name, key: colorKey });
-            }}
-          />}
-          <br />
-          {editType === 'checkbox' && <FormControlLabel
-            key={name}
-            label={name}
-            control={
-              <Checkbox
-                name={name}
-                checked={show}
-                onChange={this.handleCheck}
+            {color && (
+              <ColorPicker
+                color={color}
+                onChange={({ hex }) => {
+                  this.handleChangeColor({
+                    value: hex,
+                    name,
+                    key: colorKey,
+                  });
+                }}
               />
-            }
-          />
-          }
-          {item.editType === 'input' && <div>
-            <TextField
-              key={name}
-              name={name}
-              placeholder={name}
-              value={text}
-              label={name}
-              onChange={this.handleChange}
-            />
-            <br />
-          </div>}
-          {type !== 'basePanel' && <div>
+            )}
+          </FormControl>
+          {color && (
             <TextField
               name={name}
-              margin="normal"
-              type="number"
-              label="y"
-              value={y}
+              value={color}
+              label="color"
               onChange={(e) => {
-                this.handleChangeLocation(e, 'y');
+                const { value } = e.target;
+                this.handleChangeColor({ value, name, key: colorKey });
               }}
             />
-            <br />
-          </div>}
-          {type !== 'basePanel' && <div>
-            <TextField
-              name={name}
-              margin="normal"
-              type="number"
-              label="x"
-              value={x}
-              onChange={(e) => {
-                this.handleChangeLocation(e, 'x');
-              }}
-            />
-            <br />
-          </div>}
-          {type !== 'basePanel' && <TextField
-            name={name}
-            margin="normal"
-            type="number"
-            label="width"
-            value={width}
-            onChange={(e) => {
-              this.handleChangeSize(e, 'width');
-            }}
-          />}
+          )}
           <br />
-          {type !== 'basePanel' && <div>
+          {editType === 'checkbox' && (
+            <FormControlLabel
+              key={name}
+              label={name}
+              control={(
+                <Checkbox
+                  name={name}
+                  checked={show}
+                  onChange={this.handleCheck}
+                />
+              )}
+            />
+          )
+          }
+          {item.editType === 'input' && (
+            <div>
+              <TextField
+                key={name}
+                name={name}
+                placeholder={name}
+                value={text}
+                label={name}
+                onChange={this.handleChange}
+              />
+              <br />
+            </div>
+          )}
+          {type !== 'basePanel' && (
+            <div>
+              <TextField
+                name={name}
+                margin="normal"
+                type="number"
+                label="y"
+                value={y}
+                onChange={(e) => {
+                  this.handleChangeLocation(e, 'y');
+                }}
+              />
+              <br />
+            </div>
+          )}
+          {type !== 'basePanel' && (
+            <div>
+              <TextField
+                name={name}
+                margin="normal"
+                type="number"
+                label="x"
+                value={x}
+                onChange={(e) => {
+                  this.handleChangeLocation(e, 'x');
+                }}
+              />
+              <br />
+            </div>
+          )}
+          {type !== 'basePanel' && (
             <TextField
               name={name}
               margin="normal"
               type="number"
-              label="height"
-              value={height}
+              label="width"
+              value={width}
               onChange={(e) => {
-                this.handleChangeSize(e, 'height');
+                this.handleChangeSize(e, 'width');
               }}
             />
-          </div>}
+          )}
+          <br />
+          {type !== 'basePanel' && (
+            <div>
+              <TextField
+                name={name}
+                margin="normal"
+                type="number"
+                label="height"
+                value={height}
+                onChange={(e) => {
+                  this.handleChangeSize(e, 'height');
+                }}
+              />
+            </div>
+          )}
         </div>
       );
     };
@@ -380,16 +411,16 @@ class CommonEditGroup extends React.Component {
               })}
             </FormControl>
 
-            {/* <FormControl component="legend">
-                <Button
-                  color="primary"
-                  download={'biocard'}
-                  href={imageUrl}
-                  ref={this.downloadRef}
-                >
-                  下载
-                </Button>
-              </FormControl> */}
+            <FormControl component="legend" style={{ display: 'none' }}>
+              <Button
+                color="primary"
+                download="biocard"
+                href={imageUrl}
+                ref={this.downloadRef}
+              >
+                下载
+              </Button>
+            </FormControl>
           </form>
         </Drawer>
         <Grid container>
@@ -422,20 +453,22 @@ class CommonEditGroup extends React.Component {
                   } = item;
                   switch (type) {
                     case 'image':
-                      return show ? <image
-                        id={name}
-                        x={x}
-                        y={y}
-                        key={name}
-                        style={style}
-                        xlinkHref={xlinkHref}
-                        width={width}
-                        height={height}
-                        onMouseDown={(e) => {
-                          this.handleMouseDown(e, name);
-                        }}
-                        onMouseUp={this.handleMouseUp}
-                      /> : null;
+                      return show ? (
+                        <image
+                          id={name}
+                          x={x}
+                          y={y}
+                          key={name}
+                          style={style}
+                          xlinkHref={xlinkHref}
+                          width={width}
+                          height={height}
+                          onMouseDown={(e) => {
+                            this.handleMouseDown(e, name);
+                          }}
+                          onMouseUp={this.handleMouseUp}
+                        />
+                      ) : null;
                     case 'text':
                       return (
                         <text
@@ -469,7 +502,9 @@ class CommonEditGroup extends React.Component {
                             style={Object.assign({}, style, {
                               wordBreak: 'break-all',
                             })}
-                          >{text}</p>
+                          >
+                            {text}
+                          </p>
                         </foreignObject>
                       );
                     case 'dottedLines':
@@ -486,15 +521,17 @@ class CommonEditGroup extends React.Component {
                         </g>
                       );
                     case 'basePanel':
-                      return (<rect
-                        style={style}
-                        key={name}
-                        onClick={() => {
-                          this.setState({
-                            editModuleName: name,
-                          });
-                        }}
-                      />);
+                      return (
+                        <rect
+                          style={style}
+                          key={name}
+                          onClick={() => {
+                            this.setState({
+                              editModuleName: name,
+                            });
+                          }}
+                        />
+                      );
                     default:
                       return null;
                   }
@@ -503,12 +540,14 @@ class CommonEditGroup extends React.Component {
             </Paper>
           </Grid>
           <Grid item lg={4}>
-            {<div className="current-edit-container">
-              {EditItem(currentItem)}
-            </div>}
+            {
+              <div className="current-edit-container">
+                {EditItem(currentItem)}
+              </div>
+            }
           </Grid>
         </Grid>
-      </div >
+      </div>
     );
   }
 }

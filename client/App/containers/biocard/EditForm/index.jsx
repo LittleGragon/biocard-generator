@@ -16,7 +16,7 @@ const styles = {
   biocardContainer: {
   },
   base: {
-    fill: '#000000',
+    fill: '#ccc',
     width: '100%',
     height: '100%',
   },
@@ -53,7 +53,6 @@ class EditForm extends React.Component {
     super(props);
     this.state = {
       tabValue: 'before',
-      imageUrl: '',
       beforeFileds: [{
         type: 'basePanel',
         style: styles.base,
@@ -203,9 +202,9 @@ class EditForm extends React.Component {
         strokeWidth: 2,
         type: 'dottedLines',
       }],
-      done: false,
     };
   }
+
   render() {
     const { beforeFileds, backFields, tabValue } = this.state;
     return (
@@ -222,22 +221,26 @@ class EditForm extends React.Component {
           <Tab value="after" label="后面板" />
         </Tabs>
         <Typography component="div" style={{ padding: 8 * 3 }}>
-          {tabValue === 'before' && <CommonEditGroup
+          {tabValue === 'before' && (
+          <CommonEditGroup
             fields={beforeFileds}
             onChange={(fields) => {
               this.setState({
                 beforeFileds: fields,
               });
             }}
-          />}
-          {tabValue === 'after' && <CommonEditGroup
+          />
+          )}
+          {tabValue === 'after' && (
+          <CommonEditGroup
             fields={backFields}
             onChange={(fields) => {
               this.setState({
                 backFields: fields,
               });
             }}
-          />}
+          />
+          )}
         </Typography>
       </div>
     );
