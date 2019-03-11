@@ -113,11 +113,6 @@ class CommonEditGroup extends React.Component {
     });
   }
 
-  handleInitData = () => {
-    const { fields } = this.props;
-    this.setFields(fields);
-  }
-
   /**
    * 用于修改模块位置的函数
   */
@@ -230,13 +225,14 @@ class CommonEditGroup extends React.Component {
     });
   }
 
-  componentDidMount() {
-    this.handleInitData();
-  }
-
   componentWillUnmount() {
     window.removeEventListener('mousemove', this.handleMouseMove);
     window.removeEventListener('mouseup', this.handleMouseUp);
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    const { fields } = props;
+    return { fields };
   }
 
   render() {
@@ -552,7 +548,7 @@ class CommonEditGroup extends React.Component {
   }
 }
 CommonEditGroup.propTypes = {
-  fields: PropTypes.array,
+  fields: PropTypes.array, // eslint-disable-line
   // fields change callback
   onChange: PropTypes.func,
 };
