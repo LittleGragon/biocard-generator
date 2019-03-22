@@ -1,13 +1,11 @@
-import _ from 'lodash';
-
 class ImageUtil {
   async transImageUrlByMime(originUrl, mime) {
     const pr = new Promise((resolve, reject) => {
       const image = new Image();
       image.src = originUrl;
       const transImageByCanvas = () => {
-        const width = _.get(this, 'width', 0);
-        const height = _.get(this, 'height', 0);
+        const width = 750;
+        const height = 1050;
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;

@@ -4,12 +4,9 @@ import _ from 'lodash';
 import Grid from '@material-ui/core/Grid';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControl from '@material-ui/core/FormControl';
-import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
-import Drawer from '@material-ui/core/Drawer';
 import Paper from '@material-ui/core/Paper';
-import Button from '@material-ui/core/Button';
 import CropperImage from '$components/cropper-img';
 import ColorPicker from '$components/color-picker';
 import './style';
@@ -136,7 +133,7 @@ class CommonEditGroup extends React.Component {
         const { width, height } = item;
         if (sizeType === 'width') {
           let changeWidth = value;
-          if (value === '' || value === '0' || value === 0) {
+          if (Number(value) === 0) {
             changeWidth = 1;
           }
           const changeHeight = changeWidth * (height / width);
@@ -147,7 +144,7 @@ class CommonEditGroup extends React.Component {
         }
         if (sizeType === 'height') {
           let changeHeight = value;
-          if (value === '' || value === '0' || value === 0) {
+          if (Number(value) === 0) {
             changeHeight = 1;
           }
           const changeWidth = changeHeight * (width / height);
@@ -228,6 +225,10 @@ class CommonEditGroup extends React.Component {
   componentWillUnmount() {
     window.removeEventListener('mousemove', this.handleMouseMove);
     window.removeEventListener('mouseup', this.handleMouseUp);
+  }
+
+  componentDidMount() {
+    this.setImageUrl();
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -381,9 +382,9 @@ class CommonEditGroup extends React.Component {
     };
     return (
       <div>
-        <Drawer variant="permanent">
-          <form>
-            <FormControl component="legend">
+        <Grid container>
+          <Grid item lg={5}>
+            <div style={{ width: 375 }}>
               <CropperImage
                 onConfirm={this.handleConfirmCropper}
                 buttonText="上传图片"
@@ -393,34 +394,7 @@ class CommonEditGroup extends React.Component {
                   });
                 }}
               />
-            </FormControl>
-            <FormControl component="fieldset">
-              <FormGroup>
-                {fields.map((item) => {
-                  return EditItem(item);
-                })}
-              </FormGroup>
-            </FormControl>
-            <FormControl component="legend">
-              {fields.map((item) => {
-                return EditItem(item);
-              })}
-            </FormControl>
-
-            <FormControl component="legend" style={{ display: 'none' }}>
-              <Button
-                color="primary"
-                download="biocard"
-                href={imageUrl}
-                ref={this.downloadRef}
-              >
-                下载
-              </Button>
-            </FormControl>
-          </form>
-        </Drawer>
-        <Grid container>
-          <Grid item lg={8}>
+            </div>
             <Paper className="biocard-paper">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -543,6 +517,7 @@ class CommonEditGroup extends React.Component {
             }
           </Grid>
         </Grid>
+        <img src={imageUrl} alt="预览图片" style={{ display: 'none' }} />
       </div>
     );
   }
