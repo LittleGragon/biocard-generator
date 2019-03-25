@@ -6,3 +6,8 @@ coverage
 app/public
 .idea
 yarn-error.log
+package-lock.json
+*bak
+
+# visual studio code 
+.history
