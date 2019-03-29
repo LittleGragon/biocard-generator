@@ -61,12 +61,6 @@ class HeaderBar extends React.Component {
     });
   }
 
-  handleDownLoadFile = (mime) => {
-    window.downloadMime = mime;
-    window.dispatchEvent(window.addEvents.downloadImage);
-    this.handleClose();
-  }
-
   render() {
     const { classes } = this.props;
     const { fileTypes, open, anchorEl } = this.state;
@@ -97,13 +91,14 @@ class HeaderBar extends React.Component {
             <Menu
               open={open}
               anchorEl={anchorEl}
+              onClose={this.handleClose}
             >
               {fileTypes.map(item => {
                 const { title, mime } = item;
-                const imageBase64 = _.get(window, 'imageBase64', '');
                 return (
                   <MenuItem key={title} onClick={e => {
                     this.handleClose();
+                    const imageBase64 = _.get(window, 'imageBase64', '');
                     imageUtil.downloadImage(imageBase64, mime);
                   }}>
                     {title}
