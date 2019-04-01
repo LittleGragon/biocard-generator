@@ -7,4 +7,10 @@ RUN yarn
 
 COPY ./ ./
 
-CMD ["npm", "start"]
+RUN yarn run build:prod
+
+RUN ls app/public/local
+
+EXPOSE 7001
+
+CMD ["yarn", "run", "start"]
