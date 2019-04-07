@@ -8,7 +8,7 @@ import orangeTrim from '../images/orange_trim.png';
 import beforeColorsBox from '../images/before_colors_box.png';
 import eighteenYearBadge from '../images/18_year_badge.png';
 import backColorBox from '../images/colors_box.png';
-import logo from '../images/ingress_logo.png';
+import logo from '../images/logo.png';
 import niaBadge from '../images/NIA_badge.png';
 import './style.less';
 
@@ -123,7 +123,8 @@ class EditForm extends React.Component {
         editType: 'checkbox',
         width: 79,
         height: 65,
-      }, {
+      },
+      {
         xlinkHref: logo,
         name: 'logo',
         x: 184,
@@ -134,7 +135,8 @@ class EditForm extends React.Component {
         editType: 'checkbox',
         width: 62,
         height: Math.ceil(62 * (2032 / 1760)),
-      }, {
+      },
+      {
         xlinkHref: niaBadge,
         name: 'niaBadge',
         x: 280,
