@@ -1,4 +1,6 @@
 import React from 'react';
+import { observer } from 'mobx-react';
+import fontsStore from '$stores/fontsStore';
 import CommonEditGroup from '$components/common-edit-group';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -21,22 +23,25 @@ const styles = {
     height: '100%',
   },
   agentName: {
-    fontFamily: 'GeomGraphic-SemiBold',
+    fontFamily: 'Baloo',
     fontSize: 68,
     fill: '#ffffff',
   },
   backAgentName: {
     fontSize: 71,
+    fontFamily: 'Baloo',
     fill: '#ffffff',
   },
   backDesc: {
     fontSize: 25,
-    lineHeight: '41px',
+    fontFamily: 'Baloo',
+    lineHeight: '40px',
     color: '#c3751a',
     margin: 0,
   },
   unaligned: {
     fontSize: 29,
+    fontFamily: 'Baloo',
     fill: '#c3751a',
   },
   backLogo: {
@@ -44,10 +49,13 @@ const styles = {
   },
   backLongDesc: {
     fontSize: 21,
+    lineHeight: '21px',
+    fontFamily: 'Baloo',
     color: '#ffffff',
     margin: 0,
   },
 };
+@observer
 class EditForm extends React.Component {
   constructor(props) {
     super(props);
@@ -172,7 +180,7 @@ class EditForm extends React.Component {
         style: styles.backDesc,
         type: 'multiText',
         editType: 'input',
-        height: 48,
+        height: 80,
         width: 576,
       }, {
         x: 90,
@@ -207,10 +215,16 @@ class EditForm extends React.Component {
     };
   }
 
+  componentDidMount() {
+    fontsStore.loadFontList();
+  }
+
   render() {
     const { beforeFileds, backFields, tabValue } = this.state;
+    const { fontLink } = fontsStore;
     return (
       <div>
+        <link href={fontLink} rel="stylesheet" />
         <Tabs
           value={tabValue}
           onChange={(e, value) => {
@@ -226,6 +240,7 @@ class EditForm extends React.Component {
           {tabValue === 'before' && (
           <CommonEditGroup
             fields={beforeFileds}
+            fontsStore={fontsStore}
             onChange={(fields) => {
               this.setState({
                 beforeFileds: fields,
@@ -236,6 +251,7 @@ class EditForm extends React.Component {
           {tabValue === 'after' && (
           <CommonEditGroup
             fields={backFields}
+            fontsStore={fontsStore}
             onChange={(fields) => {
               this.setState({
                 backFields: fields,

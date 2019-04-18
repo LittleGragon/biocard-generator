@@ -22,10 +22,19 @@ class ImageUtil {
 
   async downloadImage(originUrl, mime) {
     const url = await this.transImageUrlByMime(originUrl, mime);
+    this.createDownload(url);
+  }
+
+  createDownload(url) {
     const a = document.createElement('a');
     a.setAttribute('href', url);
     a.setAttribute('download', 'biocard');
     a.click();
+  }
+
+  downloadImageByMime(canvas, mime) {
+    const url = canvas.toDataURL(mime);
+    this.createDownload(url);
   }
 }
 export default new ImageUtil();

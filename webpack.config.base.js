@@ -20,6 +20,10 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: ['es2015', 'react', 'stage-0'],
+            plugins: [
+              'transform-decorators-legacy',
+              'transform-class-properties'
+            ],
           },
         },
         {
@@ -65,6 +69,7 @@ module.exports = {
       $containers: path.resolve(__dirname, './client/App/containers'),
       $components: path.resolve(__dirname, './client/App/components'),
       $actions: path.resolve(__dirname, './client/App/actions'),
+      $stores: path.resolve(__dirname, './client/App/stores'),
       $config: path.resolve(__dirname, './client/App/config'),
       $styles: path.resolve(__dirname, './client/App/styles'),
       $utils: path.resolve(__dirname, './client/App/utils'),

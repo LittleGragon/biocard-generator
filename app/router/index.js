@@ -1,5 +1,5 @@
 
-module.exports = (app) => {
+module.exports = app => {
   const singlePagePaths = [
     '/',
     '/biocard',

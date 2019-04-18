@@ -7,9 +7,13 @@ import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 import CropperImage from '$components/cropper-img';
 import ColorPicker from '$components/color-picker';
 import './style';
+import globalStore from '$stores/globalStore';
 
 class CommonEditGroup extends React.Component {
   constructor(props) {
@@ -25,6 +29,8 @@ class CommonEditGroup extends React.Component {
     };
     this.biocardRef = React.createRef();
     this.downloadRef = React.createRef();
+    this.objectRef = React.createRef();
+    this.canvasRef = React.createRef();
   }
 
   setFields(fields) {
@@ -36,7 +42,7 @@ class CommonEditGroup extends React.Component {
       };
     });
     onChange(fields);
-    this.setImageUrl();
+    this.setImageUrl(fields);
   }
 
   handleChangeFields = ({ key, value, name }) => {
@@ -70,20 +76,109 @@ class CommonEditGroup extends React.Component {
     });
   }
 
-  setImageUrl = () => {
-    setTimeout(() => {
-      const previewSvg = this.biocardRef.current;
-      if (!previewSvg) {
-        return '';
-      }
-      const xml = new XMLSerializer().serializeToString(previewSvg);
-      const svg = unescape(encodeURIComponent(xml));
-      const data = `data:image/svg+xml;base64,${btoa(svg)}`;
-      window.imageBase64 = data;
-      this.setState({
+  setImageUrl = (fields = []) => {
+    const previewSvg = this.biocardRef.current;
+    if (!previewSvg) {
+      return '';
+    }
+    const xml = new XMLSerializer().serializeToString(previewSvg);
+    const svg = unescape(encodeURIComponent(xml));
+    const data = `data:image/svg+xml;base64,${btoa(svg)}`;
+    window.imageBase64 = data;
+    this.setState((state) => {
+      return {
+        ...state,
         imageUrl: data,
-      });
+      };
     });
+  }
+
+  handleDrawCanvas = () => {
+    const { fields } = this.state;
+    const canvas = this.canvasRef.current;
+    const context = canvas.getContext('2d');
+    const width = _.get(canvas, 'width', 0);
+    const height = _.get(canvas, 'height', 0);
+    context.clearRect(0, 0, width, height);
+    fields.forEach((item) => {
+      const type = _.get(item, 'type');
+      const x = _.get(item, 'x', 0);
+      const y = _.get(item, 'y', 0);
+      const fillColor = _.get(item, 'style.fill', '');
+      const longTextColor = _.get(item, 'style.color', '');
+      const color = type === 'multiText' ? longTextColor : fillColor;
+      const show = _.get(item, 'show', true);
+      switch (type) {
+        case 'dottedLines': {
+          const strokeDasharray = _.get(item, 'strokeDasharray', '');
+          const d = _.get(item, 'd', '');
+          const locationPoint = d.split(' ');
+          const [startX, startY, endX] = locationPoint;
+          const locationY = parseInt(startY, 10);
+          const locationStartX = parseInt(startX.replace('M', ''), 10);
+          const lineLength = parseInt(endX.replace('l', ''), 10);
+          const locationEndX = locationStartX + lineLength;
+          const startPoint = [locationStartX, locationY];
+          const endPoint = [locationEndX, locationY];
+          const dash = strokeDasharray.split(',');
+          const stroke = _.get(item, 'stroke', '');
+          context.setLineDash(dash);
+          context.lineDashOffset = 2;
+          context.strokeStyle = stroke;
+          context.beginPath();
+          context.moveTo(...startPoint);
+          context.lineTo(...endPoint);
+          context.stroke();
+          break;
+        }
+        case 'basePanel': {
+          if (show) {
+            context.fillStyle = color;
+            context.fillRect(0, 0, width, height);
+          }
+          break;
+        }
+        case 'text': {
+          if (show) {
+            const fontFamily = _.get(item, 'style.fontFamily', '');
+            const fontSize = _.get(item, 'style.fontSize', '');
+            const text = _.get(item, 'text', '');
+            context.font = `${fontSize}px ${fontFamily}`;
+            context.fillStyle = `${color}`;
+            context.fillText(text, x, y);
+          }
+          break;
+        }
+        case 'multiText': {
+          if (show) {
+            const fontFamily = _.get(item, 'style.fontFamily', '');
+            const fontSize = _.get(item, 'style.fontSize', '');
+            const lineHeight = _.get(item, 'style.lineHeight');
+            const text = _.get(item, 'text', '');
+            context.font = `${fontSize}px ${fontFamily}`;
+            context.fillStyle = `${color}`;
+            const lh = parseInt(lineHeight.replace('px', ''), 10);
+            context.wrapText(text, x, y, item.width, lh);
+          }
+          break;
+        }
+        case 'image':
+        {
+          if (show) {
+            const dWidth = _.get(item, 'width', 0);
+            const dHeight = _.get(item, 'height', 0);
+            const xlinkHref = _.get(item, 'xlinkHref', '');
+            const image = new Image();
+            image.src = xlinkHref;
+            context.drawImage(image, x, y, dWidth, dHeight);
+          }
+          break;
+        }
+        default:
+          break;
+      }
+    });
+    globalStore.setCanvas(canvas);
   }
 
   handleConfirmCropper = (url) => {
@@ -228,7 +323,11 @@ class CommonEditGroup extends React.Component {
   }
 
   componentDidMount() {
-    this.setImageUrl();
+    this.handleDrawCanvas();
+  }
+
+  componentDidUpdate() {
+    this.handleDrawCanvas();
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -238,9 +337,13 @@ class CommonEditGroup extends React.Component {
 
   render() {
     const { fields, editModuleName, imageUrl } = this.state;
+    const { fontsStore } = this.props;
     const currentItem = fields.find((item) => {
       return item.name === editModuleName;
     });
+    const { fontList } = fontsStore;
+    const baseHeight = 1050;
+    const baseWidth = 750;
     const EditItem = (item) => {
       if (!item) {
         return null;
@@ -320,6 +423,46 @@ class CommonEditGroup extends React.Component {
               <br />
             </div>
           )}
+          {item.editType === 'textarea' && (
+            <FormControl>
+              <textarea
+                name={name}
+                key={name}
+                value={_.get(item, 'text')}
+                onChange={this.handleChange}
+              />
+            </FormControl>
+          )}
+          {item.editType === 'input' && (
+            <FormControl>
+              <InputLabel>Font Family</InputLabel>
+              <Select
+                style={{ width: 167 }}
+                placeholder="字体"
+                value={_.get(item, 'style.fontFamily', '')}
+                onChange={(e) => {
+                  const { value } = e.target;
+                  this.handleChangeFields({
+                    key: 'style',
+                    name,
+                    value: { ...item.style, fontFamily: value },
+                  });
+                }}
+              >
+                {fontList.map((font) => {
+                  return (
+                    <MenuItem
+                      key={font}
+                      value={font}
+                      style={{ fontFamily: font }}
+                    >
+                      {font}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+          )}
           {type !== 'basePanel' && (
             <div>
               <TextField
@@ -398,8 +541,9 @@ class CommonEditGroup extends React.Component {
             <Paper className="biocard-paper">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                height={1050}
-                width={750}
+                xmlnsXlink="http://www.w3.org/1999/xlink"
+                height={baseHeight}
+                width={baseWidth}
                 className="biocard-svg before-svg"
                 ref={this.biocardRef}
                 id="cardSvg"
@@ -471,6 +615,7 @@ class CommonEditGroup extends React.Component {
                             fill="#ffffff"
                             style={Object.assign({}, style, {
                               wordBreak: 'break-all',
+                              whiteSpace: 'pre-wrap',
                             })}
                           >
                             {text}
@@ -518,6 +663,7 @@ class CommonEditGroup extends React.Component {
           </Grid>
         </Grid>
         <img src={imageUrl} alt="预览图片" style={{ display: 'none' }} />
+        <canvas style={{ display: 'none' }} ref={this.canvasRef} width={baseWidth} height={baseHeight} />
       </div>
     );
   }
@@ -526,6 +672,7 @@ CommonEditGroup.propTypes = {
   fields: PropTypes.array, // eslint-disable-line
   // fields change callback
   onChange: PropTypes.func,
+  fontsStore: PropTypes.object.isRequired,
 };
 CommonEditGroup.defaultProps = {
   fields: [],
