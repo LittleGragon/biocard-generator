@@ -9,6 +9,7 @@ import SvgIcon from '@material-ui/core/SvgIcon';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import imageUtil from '$utils/image';
+import globalStore from '$stores/globalStore';
 
 const styles = {
   root: {
@@ -64,6 +65,7 @@ class HeaderBar extends React.Component {
   render() {
     const { classes } = this.props;
     const { fileTypes, open, anchorEl } = this.state;
+    const { downloadCanvas } = globalStore;
     return (
       <div className={classes.root}>
         <AppBar position="fixed" className={`${styles.positionFixed}`}>
@@ -98,8 +100,9 @@ class HeaderBar extends React.Component {
                 return (
                   <MenuItem key={title} onClick={e => {
                     this.handleClose();
-                    const imageBase64 = _.get(window, 'imageBase64', '');
-                    imageUtil.downloadImage(imageBase64, mime);
+                    // const imageBase64 = _.get(window, 'imageBase64', '');
+                    // imageUtil.downloadImage(imageBase64, mime);
+                    imageUtil.downloadImageByMime(downloadCanvas, mime)
                   }}>
                     {title}
                   </MenuItem>

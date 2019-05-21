@@ -44,6 +44,7 @@
     "less": "^3.8.1",
     "less-loader": "^4.0.5",
     "mobx": "^5.9.0",
+    "mobx-react": "^5.4.3",
     "mocha": "6.0.2",
     "moment": "^2.22.2",
     "pre-commit": "^1.2.2",
@@ -82,5 +83,8 @@
       "lint"
     ],
     "docker-build": "docker-compose up -d"
+  },
+  "dependencies": {
+    "axios": "^0.18.0"
   }
 }
