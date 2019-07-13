@@ -1,10 +1,10 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import fontsStore from '$stores/fontsStore';
-import CommonEditGroup from '$components/common-edit-group';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
+import CommonEditGroup from '$components/common-edit-group';
+import fontsStore from '$stores/fontsStore';
 import logoBadge from '../images/ingress_logo_badge.png';
 import orangeTrim from '../images/orange_trim.png';
 import beforeColorsBox from '../images/before_colors_box.png';
