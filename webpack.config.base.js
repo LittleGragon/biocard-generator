@@ -1,12 +1,27 @@
 const path = require('path');
 module.exports = {
-  entry: './client/App/app.js',
+  entry: './client/App/app.tsx',
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'app/public/local'),
   },
   module: {
     rules: [{
+      test: /.tsx?$/,
+      include: [
+        path.resolve(__dirname, 'client'),
+      ],
+      exclude: [
+        path.resolve(__dirname, 'node_modules'),
+        path.resolve(__dirname, 'bower_components'),
+      ],
+      use: [{
+        loader: 'ts-loader',
+        options: {
+          transpileOnly: false,
+        }
+      }]
+    }, {
       test: /.jsx?$/,
       include: [
         path.resolve(__dirname, 'client'),
@@ -64,7 +79,7 @@ module.exports = {
   },
   plugins: [],
   resolve: {
-    extensions: ['.json', '.js', '.jsx', '.css', '.less'],
+    extensions: ['.json', '.tsx', '.ts', '.js', '.jsx', '.css', '.less'],
     alias: {
       $containers: path.resolve(__dirname, './client/App/containers'),
       $components: path.resolve(__dirname, './client/App/components'),
