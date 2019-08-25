@@ -5,8 +5,10 @@
   "private": true,
   "devDependencies": {
     "@material-ui/core": "^3.9.2",
+    "@types/react-color": "^3.0.1",
     "autod": "^3.0.1",
     "autod-egg": "^1.0.0",
+    "awesome-typescript-loader": "^5.2.1",
     "babel-core": "^6.26.0",
     "babel-loader": "7",
     "babel-plugin-transform-class-properties": "^6.24.1",
@@ -58,7 +60,9 @@
     "react-router-redux": "^4.0.8",
     "redux": "^4.0.1",
     "save-svg-as-png": "^1.4.6",
+    "source-map-loader": "^0.2.4",
     "style-loader": "^0.23.1",
+    "typescript": "^3.5.3",
     "unit.js": "2.1.0",
     "url-loader": "^1.1.2",
     "webpack": "^4.29.6",
@@ -85,6 +89,8 @@
     "docker-build": "docker-compose up -d"
   },
   "dependencies": {
+    "@types/react": "^16.8.23",
+    "@types/react-dom": "^16.8.4",
     "axios": "^0.18.0"
   }
 }

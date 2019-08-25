@@ -7,6 +7,11 @@ module.exports = {
   },
   module: {
     rules: [{
+      test: /.tsx?$/,
+      use: [{
+        loader: 'awesome-typescript-loader',
+      }],
+    },{
       test: /.jsx?$/,
       include: [
         path.resolve(__dirname, 'client'),
@@ -64,7 +69,7 @@ module.exports = {
   },
   plugins: [],
   resolve: {
-    extensions: ['.json', '.js', '.jsx', '.css', '.less'],
+    extensions: ['.json', '.js', '.jsx', '.css', '.less', '.ts', '.tsx'],
     alias: {
       $containers: path.resolve(__dirname, './client/App/containers'),
       $components: path.resolve(__dirname, './client/App/components'),

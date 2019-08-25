@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "jsx":"react",
+    "module": "commonjs",
+    "noImplicitAny": true,
+  },
+  "include": [],
+  "exclude": [
+    "node_modules"
+  ]
+}
