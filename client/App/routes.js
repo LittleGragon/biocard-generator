@@ -6,9 +6,11 @@ import LeftMenu from '$containers/left-menu';
 import '$styles/normalize.less';
 import Biocard from '$containers/biocard';
 import Header from '$components/header-bar/index.jsx';
+// import D3Draw from '$containers/D3Draw';
 
 const config = [
   { path: '', component: Biocard },
+  // { path: '/d3', component: D3Draw },
 ];
 const BasicExample = () => (
   <Router>
