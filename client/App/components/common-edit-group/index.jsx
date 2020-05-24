@@ -655,11 +655,9 @@ class CommonEditGroup extends React.Component {
             </Paper>
           </Grid>
           <Grid item lg={4}>
-            {
-              <div className="current-edit-container">
-                {EditItem(currentItem)}
-              </div>
-            }
+            <div className="current-edit-container">
+              {EditItem(currentItem)}
+            </div>
           </Grid>
         </Grid>
         <img src={imageUrl} alt="预览图片" style={{ display: 'none' }} />
