@@ -5,6 +5,8 @@
   "private": true,
   "devDependencies": {
     "@material-ui/core": "^3.9.2",
+    "@snowpack/app-scripts-react": "^1.6.0-alpha.0",
+    "@testing-library/jest-dom": "^5.11.0",
     "autod": "^3.0.1",
     "autod-egg": "^1.0.0",
     "babel-core": "^6.26.0",
@@ -58,6 +60,7 @@
     "react-router-redux": "^4.0.8",
     "redux": "^4.0.1",
     "save-svg-as-png": "^1.4.6",
+    "snowpack": "^2.6.4",
     "style-loader": "^0.23.1",
     "unit.js": "2.1.0",
     "url-loader": "^1.1.2",
@@ -76,9 +79,9 @@
     "lint": "eslint --ext js,jsx ./client",
     "ci": "npm run lint && npm run cov",
     "autod": "autod",
-    "build:dev": "webpack --config ./webpack.config.dev.js",
+    "build:dev": "snowpack dev",
     "build:pages": "webpack --config ./webpack.config.pages.js",
-    "build:prod": "webpack --config webpack.config.prod.js",
+    "build:prod": "snowpack build",
     "pre-commit": [
       "lint"
     ],
