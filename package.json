@@ -46,7 +46,7 @@
     "mobx": "^5.9.0",
     "mobx-react": "^5.4.3",
     "mocha": "6.0.2",
-    "moment": "^2.22.2",
+    "moment": "^2.29.2",
     "pre-commit": "^1.2.2",
     "react": "^16.4.2",
     "react-color": "^2.14.1",
